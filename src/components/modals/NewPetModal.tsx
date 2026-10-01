@@ -66,6 +66,18 @@ export const NewPetModal: React.FC<NewPetModalProps> = ({ isOpen, onClose, editi
       return;
     }
 
+    const numAge = Number(age);
+    if (isNaN(numAge) || numAge < 0 || numAge > 40) {
+      setErrorMsg('Please enter a valid age (0 to 40 years).');
+      return;
+    }
+
+    const numWeight = Number(weight);
+    if (isNaN(numWeight) || numWeight <= 0 || numWeight > 200) {
+      setErrorMsg('Please enter a valid positive weight in kg.');
+      return;
+    }
+
     if (editingPet) {
       updatePet({
         ...editingPet,

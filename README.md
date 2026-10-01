@@ -163,6 +163,11 @@ PawCare AI leverages Google's **Gemini API** via the modern `@google/genai` Type
 
 ```text
 pawcare-ai/
+├── api/                        # Vercel serverless API handlers
+│   ├── gemini/
+│   │   ├── chat.ts             # Serverless endpoint for Gemini chat
+│   │   └── photo-observe.ts    # Serverless endpoint for pet photo observation
+│   └── health.ts               # Serverless API healthcheck endpoint
 ├── public/                     # Static assets and icons
 ├── src/
 │   ├── assets/                 # Brand assets and images
@@ -176,7 +181,7 @@ pawcare-ai/
 │   │   ├── vet/                # Dedicated veterinary module
 │   │   │   ├── AppointmentBookingModal.tsx # 5-step WhatsApp booking workflow
 │   │   │   ├── AppointmentCard.tsx         # Appointment card with status lifecycle
-│   │   │   └── TimeSlotPicker.tsx          # Interactive time slot selector
+│   │   └── TimeSlotPicker.tsx          # Interactive time slot selector
 │   │   ├── AICareAssistantView.tsx     # Gemini AI chat & photo observation view
 │   │   ├── LandingPage.tsx             # Marketing overview and feature showcase
 │   │   ├── Navbar.tsx                  # Responsive 3-zone header and mobile navigation
@@ -190,6 +195,8 @@ pawcare-ai/
 │   │   └── AppContext.tsx      # Central application state and persistent storage
 │   ├── data/
 │   │   └── mockData.ts         # Realistic demo data for pets, vets, and store products
+│   ├── server/
+│   │   └── geminiService.ts    # Unified Gemini & offline fallback service logic
 │   ├── types/
 │   │   └── index.ts            # TypeScript interfaces and enum declarations
 │   ├── utils/
@@ -197,6 +204,8 @@ pawcare-ai/
 │   ├── App.tsx                 # Root layout and view routing
 │   ├── index.css               # Global styles and Tailwind imports
 │   └── main.tsx                # Client application entry point
+├── tests/                      # Automated test suite
+│   └── pawcare.test.mjs        # Core logic & calculation verification
 ├── .env.example                # Example environment variable template
 ├── .gitignore                  # Git untracked file configurations
 ├── index.html                  # HTML entry point with metadata and Google Fonts
@@ -204,6 +213,7 @@ pawcare-ai/
 ├── package.json                # Project dependencies and script definitions
 ├── server.ts                   # Full-stack Express server with Vite middleware
 ├── tsconfig.json               # TypeScript compiler configuration
+├── vercel.json                 # Vercel deployment & SPA route rewrite configuration
 └── vite.config.ts              # Vite build and plugin configuration
 ```
 
@@ -240,7 +250,17 @@ pawcare-ai/
    ```
    > 💡 *Note: If you run the project without a Gemini API key, PawCare AI automatically activates its built-in offline Pet Care Advisor.*
 
-4. **Run the Development Server**:
+4. **Run the Automated Test Suite**:
+   ```bash
+   npm test
+   ```
+
+5. **Typecheck & Linting**:
+   ```bash
+   npm run lint
+   ```
+
+6. **Run the Development Server**:
    ```bash
    npm run dev
    ```
@@ -249,11 +269,26 @@ pawcare-ai/
    http://localhost:3000
    ```
 
-5. **Build for Production**:
+7. **Build for Production**:
    ```bash
    npm run build
    npm start
    ```
+
+---
+
+## ☁️ Deploying to Vercel
+
+PawCare AI is configured for one-click deployment on **Vercel**:
+
+1. Push your repository to GitHub.
+2. In the [Vercel Dashboard](https://vercel.com/), click **New Project** and import your repository.
+3. Vercel automatically detects the Vite framework and uses `vercel.json` for routing:
+   - **Build Command**: `vite build` (or `npm run build`)
+   - **Output Directory**: `dist`
+4. Under **Environment Variables**, add:
+   - `GEMINI_API_KEY`: Your Google Gemini API Key
+5. Click **Deploy**. Both the client-side SPA and serverless API endpoints (`/api/gemini/chat`, `/api/gemini/photo-observe`, `/api/health`) will deploy seamlessly without dependency conflicts.
 
 ---
 
