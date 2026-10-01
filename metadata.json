@@ -1,0 +1,7 @@
+{
+  "name": "PawCare — AI Pet Care Companion",
+  "description": "Personalized everyday care, feeding guidance, reminders and veterinary support for the pets you love.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
