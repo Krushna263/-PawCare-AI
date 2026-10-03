@@ -13,6 +13,7 @@ import { AICareAssistantView } from './components/AICareAssistantView';
 import { UserPanel } from './components/UserPanel';
 import { AdminPanel } from './components/AdminPanel';
 import { NewPetModal } from './components/modals/NewPetModal';
+import { AuthModal } from './components/modals/AuthModal';
 import { CartDrawer } from './components/common/CartDrawer';
 import { ToastContainer } from './components/common/ToastContainer';
 import { Pet } from './types';
@@ -46,29 +47,31 @@ const MainContent: React.FC = () => {
 
       {/* Main Tab Routing */}
       <main className="flex-1 pb-16 md:pb-8 relative z-10">
-        {activeTab === 'home' && (
-          <LandingPage onOpenNewPetModal={handleOpenNewPet} />
-        )}
-        {activeTab === 'pet' && (
-          <PetProfileView 
-            onOpenNewPetModal={handleOpenNewPet} 
-            onEditPet={handleEditActivePet} 
-          />
-        )}
-        {activeTab === 'user_panel' && (
-          <UserPanel 
-            onOpenNewPetModal={handleOpenNewPet} 
-            onEditPet={handleEditActivePet} 
-          />
-        )}
-        {activeTab === 'admin_panel' && <AdminPanel />}
-        {activeTab === 'food' && <PetFoodSection />}
-        {activeTab === 'feeding' && <SmartFeedingView />}
-        {activeTab === 'seasonal' && <SeasonalCareView />}
-        {activeTab === 'vet' && <VetCareView />}
-        {activeTab === 'store' && <PetStoreView />}
-        {activeTab === 'reminders' && <RemindersView />}
-        {activeTab === 'assistant' && <AICareAssistantView />}
+        <div key={activeTab} className="animate-fade-scale">
+          {activeTab === 'home' && (
+            <LandingPage onOpenNewPetModal={handleOpenNewPet} />
+          )}
+          {activeTab === 'pet' && (
+            <PetProfileView 
+              onOpenNewPetModal={handleOpenNewPet} 
+              onEditPet={handleEditActivePet} 
+            />
+          )}
+          {activeTab === 'user_panel' && (
+            <UserPanel 
+              onOpenNewPetModal={handleOpenNewPet} 
+              onEditPet={handleEditActivePet} 
+            />
+          )}
+          {activeTab === 'admin_panel' && <AdminPanel />}
+          {activeTab === 'food' && <PetFoodSection />}
+          {activeTab === 'feeding' && <SmartFeedingView />}
+          {activeTab === 'seasonal' && <SeasonalCareView />}
+          {activeTab === 'vet' && <VetCareView />}
+          {activeTab === 'store' && <PetStoreView />}
+          {activeTab === 'reminders' && <RemindersView />}
+          {activeTab === 'assistant' && <AICareAssistantView />}
+        </div>
       </main>
 
       {/* Global Modals & Notifications */}
@@ -77,6 +80,7 @@ const MainContent: React.FC = () => {
         onClose={() => setIsNewPetModalOpen(false)}
         editingPet={editingPet}
       />
+      <AuthModal />
       <CartDrawer />
       <ToastContainer />
 

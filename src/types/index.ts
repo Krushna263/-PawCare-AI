@@ -223,6 +223,11 @@ export interface UserProfile {
   };
 }
 
+export interface AuthUser extends UserProfile {
+  username: string;
+  password?: string;
+}
+
 export type NavTab = 
   | 'home'
   | 'pet'

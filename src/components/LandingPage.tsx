@@ -93,7 +93,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
                 />
                 
                 {/* Floating Quick Insight Card */}
-                <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-xs bg-white/75 backdrop-blur-xl p-4 rounded-2xl border border-white/80 shadow-[0_12px_32px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.95)]">
+                <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-xs bg-white/75 backdrop-blur-xl p-4 rounded-2xl border border-white/80 shadow-[0_12px_32px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.95)] animate-float-gentle">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-emerald-50/90 text-emerald-800 flex items-center justify-center shrink-0 shadow-2xs">
                       <PawPrint className="w-5 h-5 fill-emerald-800" />

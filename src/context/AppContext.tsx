@@ -13,7 +13,8 @@ import {
   OrderFulfillment,
   PickupHub,
   UserProfile,
-  UserRole
+  UserRole,
+  AuthUser
 } from '../types';
 import { 
   INITIAL_PETS, 
@@ -31,47 +32,63 @@ interface Toast {
   message: string;
 }
 
-export const DEFAULT_USER: UserProfile = {
-  id: 'usr-sarah',
-  name: 'Sarah Jenkins',
-  email: 'sarah.jenkins@pawcare.org',
-  role: 'user',
-  avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
-  phone: '+1 (555) 234-5678',
-  address: '742 Evergreen Terrace, Springfield, OR 97477',
-  memberSince: 'March 2024',
-  notificationPreferences: {
-    email: true,
-    sms: true,
-    feedingAlerts: true,
-    appointmentReminders: true,
+export const DEFAULT_ACCOUNTS: AuthUser[] = [
+  {
+    id: 'usr-sarah',
+    username: 'user',
+    email: 'user@pawcare.com',
+    password: 'user123',
+    name: 'Sarah Jenkins',
+    role: 'user',
+    avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+    phone: '+1 (555) 234-5678',
+    address: '742 Evergreen Terrace, Springfield, OR 97477',
+    memberSince: 'March 2024',
+    notificationPreferences: {
+      email: true,
+      sms: true,
+      feedingAlerts: true,
+      appointmentReminders: true,
+    },
   },
-};
+  {
+    id: 'adm-marcus',
+    username: 'admin',
+    email: 'admin@pawcare.com',
+    password: 'admin123',
+    name: 'Dr. Marcus Vance (Chief Vet & Admin)',
+    role: 'admin',
+    avatarUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80',
+    phone: '+1 (555) 987-6543',
+    address: 'PawCare Central Hospital & Surgical Center, Suite 400',
+    memberSince: 'January 2023',
+    notificationPreferences: {
+      email: true,
+      sms: true,
+      feedingAlerts: false,
+      appointmentReminders: true,
+    },
+  },
+];
 
-export const DEFAULT_ADMIN: UserProfile = {
-  id: 'adm-marcus',
-  name: 'Dr. Marcus Vance (Chief Vet & Admin)',
-  email: 'director.vance@pawcare-clinic.org',
-  role: 'admin',
-  avatarUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80',
-  phone: '+1 (555) 987-6543',
-  address: 'PawCare Central Hospital & Surgical Center, Suite 400',
-  memberSince: 'January 2023',
-  notificationPreferences: {
-    email: true,
-    sms: true,
-    feedingAlerts: false,
-    appointmentReminders: true,
-  },
-};
+export const DEFAULT_USER: UserProfile = DEFAULT_ACCOUNTS[0];
+export const DEFAULT_ADMIN: UserProfile = DEFAULT_ACCOUNTS[1];
 
 interface AppContextType {
   activeTab: NavTab;
   setActiveTab: (tab: NavTab) => void;
 
-  // Authentication & Role
-  currentUser: UserProfile;
-  setCurrentUser: React.Dispatch<React.SetStateAction<UserProfile>>;
+  // Real Authentication & Session
+  isAuthenticated: boolean;
+  currentUser: UserProfile | null;
+  setCurrentUser: React.Dispatch<React.SetStateAction<UserProfile | null>>;
+  login: (idOrEmail: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => void;
+  register: (data: { username: string; email: string; password: string; name: string; role: UserRole; phone?: string; address?: string }) => Promise<{ success: boolean; error?: string }>;
+  isAuthModalOpen: boolean;
+  setIsAuthModalOpen: (open: boolean) => void;
+  authModalMode: 'login' | 'register';
+  setAuthModalMode: (mode: 'login' | 'register') => void;
   switchRole: (role: UserRole) => void;
   updateUserProfile: (updates: Partial<UserProfile>) => void;
 
@@ -135,8 +152,35 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   
-  // User Authentication & Roles
-  const [currentUser, setCurrentUser] = useState<UserProfile>(() => {
+  // Registered Accounts Database
+  const [usersDb, setUsersDb] = useState<AuthUser[]>(() => {
+    try {
+      const saved = localStorage.getItem('pawcare_users_db');
+      return saved ? JSON.parse(saved) : DEFAULT_ACCOUNTS;
+    } catch {
+      return DEFAULT_ACCOUNTS;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('pawcare_users_db', JSON.stringify(usersDb));
+    } catch (e) {
+      console.warn(e);
+    }
+  }, [usersDb]);
+
+  // Auth & Session State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    try {
+      const token = localStorage.getItem('pawcare_auth_token');
+      return token !== null;
+    } catch {
+      return true; // Default logged in for pleasant initial preview
+    }
+  });
+
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => {
     try {
       const saved = localStorage.getItem('pawcare_current_user');
       return saved ? JSON.parse(saved) : DEFAULT_USER;
@@ -145,28 +189,165 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   });
 
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
+
   useEffect(() => {
     try {
-      localStorage.setItem('pawcare_current_user', JSON.stringify(currentUser));
+      if (currentUser) {
+        localStorage.setItem('pawcare_current_user', JSON.stringify(currentUser));
+        localStorage.setItem('pawcare_auth_token', `jwt_token_${currentUser.id}_${Date.now()}`);
+      } else {
+        localStorage.removeItem('pawcare_current_user');
+        localStorage.removeItem('pawcare_auth_token');
+      }
     } catch (e) {
       console.warn(e);
     }
   }, [currentUser]);
 
+  // Real Login with ID/Email & Password
+  const login = async (idOrEmail: string, pass: string): Promise<{ success: boolean; error?: string }> => {
+    const cleanId = idOrEmail.trim().toLowerCase();
+    const cleanPass = pass.trim();
+
+    if (!cleanId || !cleanPass) {
+      return { success: false, error: 'Please enter both your User ID / Email and Password.' };
+    }
+
+    const matched = usersDb.find(
+      (u) =>
+        (u.username.toLowerCase() === cleanId || u.email.toLowerCase() === cleanId) &&
+        u.password === cleanPass
+    );
+
+    if (!matched) {
+      return {
+        success: false,
+        error: 'Invalid User ID or Password. Try user / user123 or admin / admin123',
+      };
+    }
+
+    // Set authenticated state
+    setIsAuthenticated(true);
+    setCurrentUser(matched);
+    setIsAuthModalOpen(false);
+
+    showToast(
+      matched.role === 'admin'
+        ? `Authenticated as Clinic Administrator (${matched.name})`
+        : `Welcome back, ${matched.name}!`,
+      'success'
+    );
+
+    // Route to appropriate panel
+    if (matched.role === 'admin') {
+      setActiveTab('admin_panel');
+    } else {
+      setActiveTab('user_panel');
+    }
+
+    return { success: true };
+  };
+
+  // Real Logout
+  const logout = () => {
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+    try {
+      localStorage.removeItem('pawcare_current_user');
+      localStorage.removeItem('pawcare_auth_token');
+    } catch (e) {
+      console.warn(e);
+    }
+    showToast('You have been logged out securely.', 'info');
+    setActiveTab('home');
+  };
+
+  // Real Registration
+  const register = async (data: {
+    username: string;
+    email: string;
+    password: string;
+    name: string;
+    role: UserRole;
+    phone?: string;
+    address?: string;
+  }): Promise<{ success: boolean; error?: string }> => {
+    const cleanUser = data.username.trim().toLowerCase();
+    const cleanEmail = data.email.trim().toLowerCase();
+
+    if (!cleanUser || !cleanEmail || !data.password || !data.name) {
+      return { success: false, error: 'All primary fields are required to register.' };
+    }
+
+    const exists = usersDb.some(
+      (u) => u.username.toLowerCase() === cleanUser || u.email.toLowerCase() === cleanEmail
+    );
+
+    if (exists) {
+      return { success: false, error: 'Username or Email is already registered.' };
+    }
+
+    const newUser: AuthUser = {
+      id: `usr-${Date.now()}`,
+      username: cleanUser,
+      email: cleanEmail,
+      password: data.password,
+      name: data.name.trim(),
+      role: data.role,
+      avatarUrl:
+        data.role === 'admin'
+          ? 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80'
+          : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      phone: data.phone || '+1 (555) 000-0000',
+      address: data.address || 'PawCare Member Address',
+      memberSince: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+      notificationPreferences: {
+        email: true,
+        sms: true,
+        feedingAlerts: true,
+        appointmentReminders: true,
+      },
+    };
+
+    setUsersDb((prev) => [...prev, newUser]);
+    setIsAuthenticated(true);
+    setCurrentUser(newUser);
+    setIsAuthModalOpen(false);
+
+    showToast(`Account created! Welcome to PawCare, ${newUser.name}.`, 'success');
+
+    if (newUser.role === 'admin') {
+      setActiveTab('admin_panel');
+    } else {
+      setActiveTab('user_panel');
+    }
+
+    return { success: true };
+  };
+
   const switchRole = (newRole: UserRole) => {
     if (newRole === 'admin') {
-      setCurrentUser(DEFAULT_ADMIN);
+      const adminAcc = usersDb.find((u) => u.role === 'admin') || DEFAULT_ADMIN;
+      setIsAuthenticated(true);
+      setCurrentUser(adminAcc);
       setActiveTab('admin_panel');
       showToast('Switched to Administrator Command Center', 'info');
     } else {
-      setCurrentUser(DEFAULT_USER);
+      const userAcc = usersDb.find((u) => u.role === 'user') || DEFAULT_USER;
+      setIsAuthenticated(true);
+      setCurrentUser(userAcc);
       setActiveTab('user_panel');
       showToast('Switched to Pet Parent Portal', 'info');
     }
   };
 
   const updateUserProfile = (updates: Partial<UserProfile>) => {
-    setCurrentUser((prev) => ({ ...prev, ...updates }));
+    if (!currentUser) return;
+    const updated = { ...currentUser, ...updates };
+    setCurrentUser(updated);
+    setUsersDb((prev) => prev.map((u) => (u.id === currentUser.id ? { ...u, ...updates } : u)));
     showToast('Profile updated successfully', 'success');
   };
 
@@ -609,8 +790,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         activeTab,
         setActiveTab,
+        isAuthenticated,
         currentUser,
         setCurrentUser,
+        login,
+        logout,
+        register,
+        isAuthModalOpen,
+        setIsAuthModalOpen,
+        authModalMode,
+        setAuthModalMode,
         switchRole,
         updateUserProfile,
         pets,

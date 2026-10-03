@@ -22,7 +22,9 @@ import {
   UserCheck, 
   ArrowRight,
   Droplets,
-  Utensils
+  Utensils,
+  User,
+  KeyRound
 } from 'lucide-react';
 
 interface UserPanelProps {
@@ -32,7 +34,11 @@ interface UserPanelProps {
 
 export const UserPanel: React.FC<UserPanelProps> = ({ onOpenNewPetModal, onEditPet }) => {
   const { 
+    isAuthenticated,
     currentUser, 
+    logout,
+    setIsAuthModalOpen,
+    setAuthModalMode,
     updateUserProfile, 
     switchRole, 
     pets, 
@@ -50,13 +56,53 @@ export const UserPanel: React.FC<UserPanelProps> = ({ onOpenNewPetModal, onEditP
   const [activeTabLocal, setActiveTabLocal] = useState<'pets' | 'appointments' | 'orders' | 'settings'>('pets');
   
   // Profile edit fields
-  const [name, setName] = useState(currentUser.name);
-  const [phone, setPhone] = useState(currentUser.phone || '');
-  const [address, setAddress] = useState(currentUser.address || '');
-  const [emailAlerts, setEmailAlerts] = useState(currentUser.notificationPreferences.email);
-  const [smsAlerts, setSmsAlerts] = useState(currentUser.notificationPreferences.sms);
-  const [feedingAlerts, setFeedingAlerts] = useState(currentUser.notificationPreferences.feedingAlerts);
-  const [appointmentAlerts, setAppointmentAlerts] = useState(currentUser.notificationPreferences.appointmentReminders);
+  const [name, setName] = useState(currentUser?.name || '');
+  const [phone, setPhone] = useState(currentUser?.phone || '');
+  const [address, setAddress] = useState(currentUser?.address || '');
+  const [emailAlerts, setEmailAlerts] = useState(currentUser?.notificationPreferences?.email ?? true);
+  const [smsAlerts, setSmsAlerts] = useState(currentUser?.notificationPreferences?.sms ?? true);
+  const [feedingAlerts, setFeedingAlerts] = useState(currentUser?.notificationPreferences?.feedingAlerts ?? true);
+  const [appointmentAlerts, setAppointmentAlerts] = useState(currentUser?.notificationPreferences?.appointmentReminders ?? true);
+
+  // If not authenticated, show sign-in gate
+  if (!isAuthenticated || !currentUser) {
+    return (
+      <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-6 animate-fade-scale">
+        <div className="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto border border-emerald-200/80 shadow-sm animate-float-gentle">
+          <User className="w-8 h-8" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl sm:text-3xl font-black text-stone-900 font-display">
+            Sign in to Your Pet Parent Portal
+          </h2>
+          <p className="text-xs sm:text-sm text-stone-500 max-w-md mx-auto leading-relaxed">
+            Access your companion's health radar, vaccination timelines, clinic appointment schedules, and pickup pass codes.
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <button
+            onClick={() => {
+              setAuthModalMode('login');
+              setIsAuthModalOpen(true);
+            }}
+            className="px-6 py-2.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-2"
+          >
+            <KeyRound className="w-4 h-4 text-emerald-300" />
+            <span>Sign In with ID & Password</span>
+          </button>
+          <button
+            onClick={() => {
+              setAuthModalMode('register');
+              setIsAuthModalOpen(true);
+            }}
+            className="px-5 py-2.5 rounded-2xl bg-white hover:bg-stone-50 text-stone-700 font-semibold text-xs border border-stone-200 transition-all cursor-pointer"
+          >
+            Create New Account
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,6 +161,14 @@ export const UserPanel: React.FC<UserPanelProps> = ({ onOpenNewPetModal, onEditP
             >
               <Plus className="w-4 h-4" />
               <span>Add Companion</span>
+            </button>
+            <button
+              onClick={logout}
+              className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-rose-500/20 text-stone-200 hover:text-rose-200 font-semibold text-xs border border-white/20 hover:border-rose-400/40 transition-all flex items-center gap-1.5 cursor-pointer"
+              title="Sign Out of Session"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Sign Out</span>
             </button>
           </div>
         </div>

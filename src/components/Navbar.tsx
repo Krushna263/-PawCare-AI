@@ -19,7 +19,9 @@ import {
   Check,
   User,
   ShieldCheck,
-  ArrowRightLeft
+  ArrowRightLeft,
+  LogOut,
+  KeyRound
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -35,7 +37,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
     setActivePetId, 
     cart, 
     setIsCartOpen,
+    isAuthenticated,
     currentUser,
+    logout,
+    setIsAuthModalOpen,
+    setAuthModalMode,
     switchRole
   } = useApp();
 
@@ -213,37 +219,58 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
 
           {/* Zone 3: 1-2 Primary Actions */}
           <div className="flex items-center gap-2.5">
-            {/* User / Admin Portal Switcher Pill */}
-            <div className="flex items-center gap-1 p-0.5 rounded-full bg-white/70 backdrop-blur-md border border-white/80 shadow-[0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)]">
-              <button
-                onClick={() => setActiveTab(currentUser.role === 'admin' ? 'admin_panel' : 'user_panel')}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                  activeTab === 'user_panel' || activeTab === 'admin_panel'
-                    ? currentUser.role === 'admin'
-                      ? 'bg-stone-900 text-amber-300 shadow-2xs'
-                      : 'bg-emerald-800 text-white shadow-2xs'
-                    : 'text-stone-700 hover:text-stone-900'
-                }`}
-                title={`Open ${currentUser.role === 'admin' ? 'Admin Panel' : 'User Panel'}`}
-              >
-                {currentUser.role === 'admin' ? (
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                ) : (
-                  <User className="w-3.5 h-3.5 text-emerald-600" />
-                )}
-                <span className="hidden sm:inline">
-                  {currentUser.role === 'admin' ? 'Admin Panel' : 'User Panel'}
-                </span>
-              </button>
+            {/* User / Admin Authentication State Pill */}
+            {isAuthenticated && currentUser ? (
+              <div className="flex items-center gap-1 p-0.5 rounded-full bg-white/70 backdrop-blur-md border border-white/80 shadow-[0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)]">
+                <button
+                  onClick={() => setActiveTab(currentUser.role === 'admin' ? 'admin_panel' : 'user_panel')}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                    activeTab === 'user_panel' || activeTab === 'admin_panel'
+                      ? currentUser.role === 'admin'
+                        ? 'bg-stone-900 text-amber-300 shadow-2xs'
+                        : 'bg-emerald-800 text-white shadow-2xs'
+                      : 'text-stone-700 hover:text-stone-900'
+                  }`}
+                  title={`Open ${currentUser.role === 'admin' ? 'Admin Panel' : 'User Panel'}`}
+                >
+                  {currentUser.role === 'admin' ? (
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                  ) : (
+                    <User className="w-3.5 h-3.5 text-emerald-600" />
+                  )}
+                  <span className="hidden sm:inline">
+                    {currentUser.role === 'admin' ? 'Admin Panel' : 'User Panel'}
+                  </span>
+                </button>
 
+                <button
+                  onClick={() => switchRole(currentUser.role === 'admin' ? 'user' : 'admin')}
+                  className="p-1 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer"
+                  title={`Switch Role to ${currentUser.role === 'admin' ? 'Pet Parent' : 'Clinic Administrator'}`}
+                >
+                  <ArrowRightLeft className="w-3 h-3" />
+                </button>
+
+                <button
+                  onClick={logout}
+                  className="p-1 rounded-full text-stone-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                  title="Sign Out"
+                >
+                  <LogOut className="w-3 h-3" />
+                </button>
+              </div>
+            ) : (
               <button
-                onClick={() => switchRole(currentUser.role === 'admin' ? 'user' : 'admin')}
-                className="p-1 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer"
-                title={`Switch Role to ${currentUser.role === 'admin' ? 'Pet Parent' : 'Clinic Administrator'}`}
+                onClick={() => {
+                  setAuthModalMode('login');
+                  setIsAuthModalOpen(true);
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer"
               >
-                <ArrowRightLeft className="w-3 h-3" />
+                <KeyRound className="w-3.5 h-3.5 text-emerald-300" />
+                <span>Sign In</span>
               </button>
-            </div>
+            )}
 
             {/* Active Pet Selector / Profile Button */}
             <div className="relative">
