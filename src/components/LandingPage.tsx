@@ -51,7 +51,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <button
                   onClick={onOpenNewPetModal}
-                  className="px-6 py-3.5 rounded-xl bg-emerald-800 text-white font-semibold text-sm hover:bg-emerald-900 transition-all shadow-md shadow-emerald-900/10 active:scale-[0.98] flex items-center gap-2 cursor-pointer"
+                  className="px-6 py-3.5 rounded-2xl bg-emerald-800/80 hover:bg-emerald-800/90 text-white font-semibold text-sm backdrop-blur-2xl border border-white/30 shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.45),inset_0_-1px_1px_0_rgba(0,0,0,0.25),0_8px_20px_-4px_rgba(6,78,59,0.35)] hover:shadow-[inset_0_1px_1.5px_0_rgba(255,255,255,0.6),0_12px_28px_-6px_rgba(6,78,59,0.45)] hover:-translate-y-0.5 active:scale-[0.985] transition-all duration-200 flex items-center gap-2 cursor-pointer"
                 >
                   <PawPrint className="w-4 h-4 fill-white" />
                   <span>Create Pet Profile</span>
@@ -60,7 +60,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
 
                 <button
                   onClick={() => setActiveTab('pet')}
-                  className="px-6 py-3.5 rounded-xl bg-white border border-stone-300 text-stone-800 font-semibold text-sm hover:bg-stone-50 transition-colors shadow-2xs active:scale-[0.98] cursor-pointer"
+                  className="px-6 py-3.5 rounded-2xl bg-white/50 hover:bg-white/70 text-stone-800 font-semibold text-sm backdrop-blur-2xl border border-white/80 shadow-[inset_0_1px_1px_0_rgba(255,255,255,0.9),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_8px_20px_-4px_rgba(0,0,0,0.06)] hover:shadow-[inset_0_1px_1.5px_0_rgba(255,255,255,1),0_12px_28px_-6px_rgba(0,0,0,0.09)] hover:-translate-y-0.5 active:scale-[0.985] transition-all duration-200 cursor-pointer"
                 >
                   Explore Dashboard
                 </button>
@@ -87,15 +87,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
             <div className="lg:col-span-6 relative">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-stone-200/90 aspect-16/10 bg-stone-100 group">
                 <ImageWithFallback
-                  src="/src/assets/images/hero_pawcare_pets_1790874508015.jpg"
-                  alt="Healthy golden retriever and cat in modern sunlit living room"
+                  src="/src/assets/images/all_pets_realistic_1790933284668.jpg"
+                  alt="Realistic domestic pets including dogs, cats, rabbits, and birds gathered together in a sunlit home"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                 />
                 
                 {/* Floating Quick Insight Card */}
-                <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-xs bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-stone-200 shadow-xl">
+                <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-xs bg-white/75 backdrop-blur-xl p-4 rounded-2xl border border-white/80 shadow-[0_12px_32px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.95)]">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50/90 text-emerald-800 flex items-center justify-center shrink-0 shadow-2xs">
                       <PawPrint className="w-5 h-5 fill-emerald-800" />
                     </div>
                     <div>
@@ -127,10 +127,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
           {/* Card 1: Personalized Pet Care */}
           <div 
             onClick={() => setActiveTab('pet')}
-            className="group p-6 rounded-2xl bg-white border border-stone-200/80 shadow-xs hover:border-emerald-700/40 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+            className="group p-6 rounded-3xl bg-white/45 hover:bg-white/65 backdrop-blur-2xl border border-white/70 hover:border-white/90 shadow-[inset_0_1.5px_1px_0_rgba(255,255,255,0.95),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_10px_30px_-5px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.02)] hover:shadow-[inset_0_1.5px_1.5px_0_rgba(255,255,255,1),0_20px_40px_-8px_rgba(6,78,59,0.08),0_6px_16px_-3px_rgba(0,0,0,0.03)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-emerald-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
                 <Heart className="w-6 h-6 stroke-[1.8]" />
               </div>
               <h3 className="text-lg font-bold text-stone-900 group-hover:text-emerald-900 transition-colors">
@@ -149,10 +149,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
           {/* Card 2: Feeding Guidance */}
           <div 
             onClick={() => setActiveTab('feeding')}
-            className="group p-6 rounded-2xl bg-white border border-stone-200/80 shadow-xs hover:border-emerald-700/40 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+            className="group p-6 rounded-3xl bg-white/45 hover:bg-white/65 backdrop-blur-2xl border border-white/70 hover:border-white/90 shadow-[inset_0_1.5px_1px_0_rgba(255,255,255,0.95),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_10px_30px_-5px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.02)] hover:shadow-[inset_0_1.5px_1.5px_0_rgba(255,255,255,1),0_20px_40px_-8px_rgba(217,119,6,0.08),0_6px_16px_-3px_rgba(0,0,0,0.03)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-amber-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
                 <Utensils className="w-6 h-6 stroke-[1.8]" />
               </div>
               <h3 className="text-lg font-bold text-stone-900 group-hover:text-amber-900 transition-colors">
@@ -171,10 +171,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
           {/* Card 3: Veterinary Appointments */}
           <div 
             onClick={() => setActiveTab('vet')}
-            className="group p-6 rounded-2xl bg-white border border-stone-200/80 shadow-xs hover:border-emerald-700/40 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+            className="group p-6 rounded-3xl bg-white/45 hover:bg-white/65 backdrop-blur-2xl border border-white/70 hover:border-white/90 shadow-[inset_0_1.5px_1px_0_rgba(255,255,255,0.95),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_10px_30px_-5px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.02)] hover:shadow-[inset_0_1.5px_1.5px_0_rgba(255,255,255,1),0_20px_40px_-8px_rgba(13,148,136,0.08),0_6px_16px_-3px_rgba(0,0,0,0.03)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-teal-50 text-teal-800 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-teal-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
                 <Stethoscope className="w-6 h-6 stroke-[1.8]" />
               </div>
               <h3 className="text-lg font-bold text-stone-900 group-hover:text-teal-900 transition-colors">
@@ -193,10 +193,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
           {/* Card 4: Vaccination Reminders */}
           <div 
             onClick={() => setActiveTab('reminders')}
-            className="group p-6 rounded-2xl bg-white border border-stone-200/80 shadow-xs hover:border-emerald-700/40 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+            className="group p-6 rounded-3xl bg-white/45 hover:bg-white/65 backdrop-blur-2xl border border-white/70 hover:border-white/90 shadow-[inset_0_1.5px_1px_0_rgba(255,255,255,0.95),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_10px_30px_-5px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.02)] hover:shadow-[inset_0_1.5px_1.5px_0_rgba(255,255,255,1),0_20px_40px_-8px_rgba(225,29,72,0.08),0_6px_16px_-3px_rgba(0,0,0,0.03)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-800 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-rose-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
                 <Bell className="w-6 h-6 stroke-[1.8]" />
               </div>
               <h3 className="text-lg font-bold text-stone-900 group-hover:text-rose-900 transition-colors">
@@ -212,24 +212,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
             </div>
           </div>
 
-          {/* Card 5: Pet Products */}
+          {/* Card 5: Pet Food & Supplies */}
           <div 
-            onClick={() => setActiveTab('store')}
-            className="group p-6 rounded-2xl bg-white border border-stone-200/80 shadow-xs hover:border-emerald-700/40 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+            onClick={() => setActiveTab('food')}
+            className="group p-6 rounded-3xl bg-white/45 hover:bg-white/65 backdrop-blur-2xl border border-white/70 hover:border-white/90 shadow-[inset_0_1.5px_1px_0_rgba(255,255,255,0.95),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_10px_30px_-5px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.02)] hover:shadow-[inset_0_1.5px_1.5px_0_rgba(255,255,255,1),0_20px_40px_-8px_rgba(37,99,235,0.08),0_6px_16px_-3px_rgba(0,0,0,0.03)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-800 flex items-center justify-center">
-                <ShoppingBag className="w-6 h-6 stroke-[1.8]" />
+              <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-blue-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
+                <Utensils className="w-6 h-6 stroke-[1.8]" />
               </div>
               <h3 className="text-lg font-bold text-stone-900 group-hover:text-blue-900 transition-colors">
-                Curated Pet Products
+                58+ Pet Food Pantry
               </h3>
               <p className="text-sm text-stone-600 leading-relaxed">
-                Veterinarian-approved nutrition, hypoallergenic grooming essentials, enrichment toys, and orthopedic beds.
+                Veterinarian-approved dry kibbles, wet cans, raw bites, and clinical diets. Order online for delivery or 45-min store pickup.
               </p>
             </div>
             <div className="pt-6 flex items-center gap-1 text-xs font-semibold text-blue-800 group-hover:translate-x-1 transition-transform">
-              <span>Browse Pet Store</span>
+              <span>Explore Food Pantry (58+ Items)</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </div>
@@ -237,10 +237,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
           {/* Card 6: Seasonal Care & AI Assistant */}
           <div 
             onClick={() => setActiveTab('seasonal')}
-            className="group p-6 rounded-2xl bg-white border border-stone-200/80 shadow-xs hover:border-emerald-700/40 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+            className="group p-6 rounded-3xl bg-white/45 hover:bg-white/65 backdrop-blur-2xl border border-white/70 hover:border-white/90 shadow-[inset_0_1.5px_1px_0_rgba(255,255,255,0.95),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_10px_30px_-5px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.02)] hover:shadow-[inset_0_1.5px_1.5px_0_rgba(255,255,255,1),0_20px_40px_-8px_rgba(234,88,12,0.08),0_6px_16px_-3px_rgba(0,0,0,0.03)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-800 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-orange-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
                 <SunMedium className="w-6 h-6 stroke-[1.8]" />
               </div>
               <h3 className="text-lg font-bold text-stone-900 group-hover:text-orange-900 transition-colors">
@@ -259,26 +259,59 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
         </div>
 
         {/* Feature Spotlight: PawCare AI */}
-        <div className="mt-8 p-8 rounded-3xl bg-linear-to-r from-emerald-950 via-emerald-900 to-stone-900 text-white relative overflow-hidden shadow-xl">
+        <div className="mt-8 p-8 sm:p-10 rounded-3xl relative overflow-hidden bg-gradient-to-br from-emerald-950/85 via-emerald-900/75 to-stone-900/85 backdrop-blur-2xl border border-white/20 shadow-[0_20px_50px_-12px_rgba(6,78,59,0.35),inset_0_1px_1px_rgba(255,255,255,0.4),inset_0_-1px_1px_rgba(0,0,0,0.5)] text-white">
+          {/* Realistic glass ambient light flares / refraction spheres */}
+          <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-emerald-400/20 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-20 w-72 h-72 rounded-full bg-amber-400/15 blur-3xl pointer-events-none" />
+          <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-64 h-64 rounded-full bg-teal-300/10 blur-2xl pointer-events-none" />
+
+          {/* Top specular reflection sheen layer */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/[0.12] via-transparent to-black/[0.15] pointer-events-none" />
+
           <div className="relative z-10 max-w-2xl space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/80 text-emerald-200 text-xs font-medium">
-              <Bot className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-200 text-xs font-medium shadow-xs">
+              <Bot className="w-3.5 h-3.5 text-emerald-300" />
               <span>Context-Aware Pet Companion AI</span>
             </div>
-            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white drop-shadow-xs">
               Instant answers tailored to your pet's exact profile.
             </h3>
-            <p className="text-emerald-100 text-sm sm:text-base leading-relaxed">
+            <p className="text-emerald-100/90 text-sm sm:text-base leading-relaxed text-pretty">
               Ask questions regarding dietary safety, puppy feeding rhythms, hydration tricks, or upload a pet photo for visual observations with responsible, non-diagnostic guidance.
             </p>
             <div className="pt-2">
-              <button
-                onClick={() => setActiveTab('assistant')}
-                className="px-5 py-3 rounded-xl bg-white text-emerald-950 font-bold text-sm hover:bg-stone-100 transition-colors shadow-sm flex items-center gap-2"
-              >
-                <span>Chat with PawCare AI</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              <div className="relative inline-flex group">
+                {/* AI Neural Aura Glow Pulse behind the button */}
+                <div 
+                  className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300 opacity-70 blur-md group-hover:opacity-100 transition duration-500 animate-ai-glow pointer-events-none" 
+                  aria-hidden="true" 
+                />
+
+                {/* The Interactive AI Button */}
+                <button
+                  onClick={() => setActiveTab('assistant')}
+                  className="relative px-6 py-3.5 rounded-2xl bg-white text-emerald-950 font-bold text-sm transition-all duration-300 shadow-[0_8px_24px_rgba(6,78,59,0.25),inset_0_1px_1px_rgba(255,255,255,1)] hover:shadow-[0_12px_32px_rgba(6,78,59,0.35)] hover:scale-[1.03] active:scale-[0.98] flex items-center gap-2.5 overflow-hidden cursor-pointer"
+                >
+                  {/* Continuous AI Shimmer Beam */}
+                  <span 
+                    className="absolute inset-0 w-2/3 h-full bg-gradient-to-r from-transparent via-emerald-100/70 to-transparent animate-ai-shimmer pointer-events-none" 
+                    aria-hidden="true" 
+                  />
+
+                  {/* Pulsing AI Live Status Indicator */}
+                  <span className="relative flex h-2.5 w-2.5 shrink-0" aria-hidden="true">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-600 shadow-xs" />
+                  </span>
+
+                  {/* Animated AI Sparkles */}
+                  <Sparkles className="w-4 h-4 text-emerald-700 animate-pulse shrink-0" />
+
+                  <span className="relative tracking-tight">Chat with PawCare AI</span>
+
+                  <ArrowRight className="w-4 h-4 text-emerald-800 transition-transform duration-300 group-hover:translate-x-1.5 shrink-0" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -286,7 +319,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
 
       {/* 3. HOW PAWCARE WORKS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-stone-100/80 rounded-3xl p-8 sm:p-12 border border-stone-200/80">
+        <div className="bg-white/60 backdrop-blur-2xl rounded-3xl p-8 sm:p-12 border border-white/80 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.95)]">
           <div className="text-center max-w-xl mx-auto space-y-2 mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-stone-900">
               How PawCare Works
@@ -297,8 +330,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-2xs space-y-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-800 text-white font-bold text-xs flex items-center justify-center">
+            <div className="bg-white/75 backdrop-blur-xl p-6 rounded-2xl border border-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,1)] space-y-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-100/90 text-emerald-900 font-bold text-xs flex items-center justify-center border border-emerald-200/90 shadow-2xs">
                 01
               </div>
               <h3 className="text-base font-bold text-stone-900">Create your pet profile</h3>
@@ -307,8 +340,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-2xs space-y-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-800 text-white font-bold text-xs flex items-center justify-center">
+            <div className="bg-white/75 backdrop-blur-xl p-6 rounded-2xl border border-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,1)] space-y-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-100/90 text-emerald-900 font-bold text-xs flex items-center justify-center border border-emerald-200/90 shadow-2xs">
                 02
               </div>
               <h3 className="text-base font-bold text-stone-900">Tell us about your pet</h3>
@@ -317,8 +350,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
               </p>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-2xs space-y-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-800 text-white font-bold text-xs flex items-center justify-center">
+            <div className="bg-white/75 backdrop-blur-xl p-6 rounded-2xl border border-white/90 shadow-[0_4px_20px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,1)] space-y-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-100/90 text-emerald-900 font-bold text-xs flex items-center justify-center border border-emerald-200/90 shadow-2xs">
                 03
               </div>
               <h3 className="text-base font-bold text-stone-900">Get personalized guidance</h3>
@@ -343,7 +376,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          <div className="p-6 rounded-2xl bg-white border border-stone-200 shadow-2xs space-y-4">
+          <div className="p-6 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:bg-white/90 transition-all duration-300 space-y-4">
             <div className="flex items-center gap-1 text-amber-500">
               {'★★★★★'}
             </div>
@@ -352,30 +385,32 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
             </p>
             <div className="pt-2 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
               <div>
-                <span className="font-semibold text-stone-900 block">Camila Ramos</span>
+                <span className="font-semibold text-stone-900 block">Aryan Patil</span>
                 <span>Guardian to Bruno (Golden Retriever)</span>
               </div>
               <span className="text-[10px] text-stone-600">Demo User</span>
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white border border-stone-200 shadow-2xs space-y-4">
+          <div className="p-6 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:bg-white/90 transition-all duration-300 space-y-4">
             <div className="flex items-center gap-1 text-amber-500">
               {'★★★★★'}
             </div>
             <p className="text-xs sm:text-sm text-stone-700 leading-relaxed italic">
               "The monsoon paw-care checklist saved Luna from chronic yeast infections. Having seasonal tips auto-adapt to our climate is sheer genius for cat parents."
             </p>
-            <div className="pt-2 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
+            <div className="pt-6 mt-4 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
               <div>
-                <span className="font-semibold text-stone-900 block">Julian Mercer</span>
+                <span className="font-semibold text-stone-900 block">Zia Joshep</span>
                 <span>Guardian to Luna (Persian Cat)</span>
               </div>
-              <span className="text-[10px] text-stone-600">Demo User</span>
+              <span className="text-[10px] text-stone-600 text-right leading-tight block">
+                Demo<br />User
+              </span>
             </div>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white border border-stone-200 shadow-2xs space-y-4">
+          <div className="p-6 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:bg-white/90 transition-all duration-300 space-y-4">
             <div className="flex items-center gap-1 text-amber-500">
               {'★★★★★'}
             </div>
@@ -384,7 +419,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
             </p>
             <div className="pt-2 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
               <div>
-                <span className="font-semibold text-stone-900 block">Aria Thornton</span>
+                <span className="font-semibold text-stone-900 block">Jeet Singh</span>
                 <span>Guardian to Milo (Beagle Puppy)</span>
               </div>
               <span className="text-[10px] text-stone-600">Demo User</span>
@@ -400,11 +435,69 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-3 md:col-span-1">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-emerald-800 text-white flex items-center justify-center">
-                  <PawPrint className="w-3.5 h-3.5 fill-white" />
+              <div className="flex items-center gap-2.5">
+                <div className="relative w-8 h-8 rounded-xl bg-linear-to-br from-emerald-600 via-emerald-800 to-stone-900 p-[1.5px] shadow-xs flex items-center justify-center">
+                  <div className="w-full h-full rounded-[10px] bg-linear-to-br from-emerald-900 via-emerald-800 to-teal-950 flex items-center justify-center relative overflow-hidden">
+                    <div className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-amber-400/30 blur-xs pointer-events-none" />
+                    <svg
+                      viewBox="0 0 32 32"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-4.5 h-4.5"
+                      aria-label="PawCare Logo"
+                    >
+                      {/* Dog silhouette */}
+                      <path
+                        d="M7 14C6 11.5 7.5 8.5 10 7.5C12 6.8 14 7.8 15 9.5C13.8 11.8 13.2 14.5 13.2 17.5C13.2 20.8 14.2 23.5 15.8 25C11.8 25 8.5 21.8 7.5 17.8C7 16 6.8 15 7 14Z"
+                        fill="#FAF9F5"
+                      />
+                      <path
+                        d="M7.5 11.5C6 13.2 5.8 17 6.8 19C7.5 20.2 8.8 19.8 9.2 17.8C9.6 15.2 9.2 13 7.5 11.5Z"
+                        fill="#E2E8F0"
+                      />
+
+                      {/* Cat silhouette */}
+                      <path
+                        d="M18 7.5L20.5 3.5L22.5 7C24.5 8.2 26.5 10.8 26.5 14.2C26.5 18.5 23.8 22.5 20 24.5C18.5 25.1 17 25.3 15.8 25.4C14.5 23.5 13.8 20.8 13.8 17.5C13.8 13.8 15.2 11 17.2 8.5L18 7.5Z"
+                        fill="#F59E0B"
+                      />
+                      <path
+                        d="M19.5 6.8L20.6 5L21.8 6.8C21.1 7.2 20.2 7.2 19.5 6.8Z"
+                        fill="#B45309"
+                      />
+
+                      {/* Rabbit ears */}
+                      <path
+                        d="M13.5 6.5C13 4 13.5 2.2 14.5 2.2C15.5 2.2 15.8 3.8 15.5 6"
+                        stroke="#FAF9F5"
+                        strokeWidth="1.2"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M16 6C16.5 3.8 17.2 2.5 18.2 2.8C19 3.2 18.8 4.8 17.8 6.5"
+                        stroke="#FEF08A"
+                        strokeWidth="1.2"
+                        strokeLinecap="round"
+                      />
+
+                      {/* Companion bird accent */}
+                      <path
+                        d="M24.5 4.5C25.5 3.8 27 3.8 28 4.2C27.2 5 26.5 5.8 26.2 6.5C25.5 6 24.8 5.2 24.5 4.5Z"
+                        fill="#FEF08A"
+                      />
+
+                      {/* Unified loving heart */}
+                      <path
+                        d="M14.5 17C14.5 15.5 15.5 14.8 16.2 15.5C17 14.8 18 15.5 18 17C18 18.8 16.2 20.2 16.2 20.2C16.2 20.2 14.5 18.8 14.5 17Z"
+                        fill="#FAF9F5"
+                      />
+                    </svg>
+                  </div>
                 </div>
-                <span className="text-lg font-bold text-stone-900">PawCare</span>
+                <span className="font-['Outfit',sans-serif] text-[20px] font-black tracking-[-0.03em] text-stone-900 inline-flex items-center">
+                  Paw<span className="text-emerald-800 font-extrabold ml-px">Care</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 ml-1 mb-0.5 inline-block" />
+                </span>
               </div>
               <p className="text-xs text-stone-500 leading-relaxed">
                 Better care. Happier companions. Modern, AI-assisted health and lifestyle companion for pet owners worldwide.
@@ -444,7 +537,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
 
           <div className="pt-6 border-t border-stone-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-600">
             <div>
-              © 2026 PawCare Inc. All rights reserved. Built as a prototype for veterinary-care innovation.
+              © 2026 PawCare Inc. All rights reserved.
             </div>
             <div className="text-[11px] text-stone-600 text-center sm:text-right max-w-md">
               Disclaimer: Simulated features (vet booking, store checkout) are for prototype demonstration and not affiliated with actual medical clinics or payment gateways.

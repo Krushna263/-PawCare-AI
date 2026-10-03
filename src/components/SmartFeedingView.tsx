@@ -12,7 +12,8 @@ import {
   ShieldCheck, 
   Sparkles,
   Info,
-  Edit2
+  Edit2,
+  ArrowRight
 } from 'lucide-react';
 
 export const SmartFeedingView: React.FC = () => {
@@ -21,7 +22,8 @@ export const SmartFeedingView: React.FC = () => {
     feedingSchedule, 
     toggleMealCompletion, 
     updateMealTime, 
-    addMeal 
+    addMeal,
+    setActiveTab: setAppTab
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<'today' | 'safe' | 'avoid' | 'tips'>('today');
@@ -101,8 +103,8 @@ export const SmartFeedingView: React.FC = () => {
         </div>
 
         {/* Quick Hydration Metric */}
-        <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-teal-50 border border-teal-200/80 text-teal-900">
-          <div className="w-9 h-9 rounded-xl bg-teal-100 flex items-center justify-center text-teal-700 shrink-0">
+        <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-teal-50/70 backdrop-blur-xl border border-teal-200/80 text-teal-900 shadow-[0_4px_16px_rgba(13,148,136,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)]">
+          <div className="w-9 h-9 rounded-xl bg-teal-100 flex items-center justify-center text-teal-700 shrink-0 shadow-2xs">
             <Droplet className="w-5 h-5 fill-teal-600 stroke-teal-700" />
           </div>
           <div>
@@ -113,7 +115,7 @@ export const SmartFeedingView: React.FC = () => {
       </div>
 
       {/* Tabs Navigation (Compliant with Frontend Design interactive tabs) */}
-      <div className="flex items-center gap-1.5 p-1 bg-stone-100/90 rounded-2xl max-w-md border border-stone-200">
+      <div className="flex items-center gap-1.5 p-1.5 bg-white/70 backdrop-blur-xl rounded-2xl max-w-md border border-white/80 shadow-[0_4px_16px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,1)]">
         <button
           onClick={() => setActiveTab('today')}
           className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all cursor-pointer ${
@@ -161,7 +163,7 @@ export const SmartFeedingView: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
           {/* Left Column: Visual Daily Timeline */}
-          <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-xs space-y-6">
+          <div className="lg:col-span-8 bg-white/70 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-white/80 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,1)] space-y-6">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-stone-900">
@@ -328,23 +330,23 @@ export const SmartFeedingView: React.FC = () => {
           {/* Right Column: General Portion & Life-Stage Guidance */}
           <div className="lg:col-span-4 space-y-6">
             
-            <div className="p-6 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-4">
+            <div className="p-6 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,1)] space-y-4">
               <h3 className="text-base font-bold text-stone-900">
                 Portion & Treat Rules
               </h3>
 
               <div className="space-y-3 text-xs text-stone-600 leading-relaxed">
-                <div className="p-3 rounded-xl bg-stone-50 border border-stone-100">
+                <div className="p-3 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-2xs">
                   <span className="font-semibold text-stone-900 block mb-0.5">The 10% Treat Principle</span>
                   Biscuits, training rewards, and table toppers should never exceed 10% of total daily caloric expenditure to prevent micronutrient imbalance.
                 </div>
 
-                <div className="p-3 rounded-xl bg-stone-50 border border-stone-100">
+                <div className="p-3 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-2xs">
                   <span className="font-semibold text-stone-900 block mb-0.5">Weighing vs Measuring Cups</span>
                   Standard dry measuring cups can vary by up to 20% in weight. Using a digital kitchen scale produces consistent metabolic regulation.
                 </div>
 
-                <div className="p-3 rounded-xl bg-stone-50 border border-stone-100">
+                <div className="p-3 rounded-2xl bg-white/60 backdrop-blur-md border border-white/80 shadow-2xs">
                   <span className="font-semibold text-stone-900 block mb-0.5">Post-Meal Rest Window</span>
                   For medium to deep-chested canine breeds, avoid vigorous running or agility training within 60 minutes after eating to reduce gastric bloat risk.
                 </div>
@@ -352,13 +354,33 @@ export const SmartFeedingView: React.FC = () => {
             </div>
 
             {/* Life Stage Guidance */}
-            <div className="p-6 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-3">
+            <div className="p-6 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,1)] space-y-3">
               <h3 className="text-base font-bold text-stone-900">
                 Age-Specific Considerations
               </h3>
               <p className="text-xs text-stone-600 leading-relaxed">
                 {activePet.name} is currently <span className="font-semibold text-stone-900">{activePet.age} years old</span>. At this stage, focus on maintaining an ideal Body Condition Score (BCS 4-5 on a 9-point scale) where ribs are easily felt without excess fat covering.
               </p>
+            </div>
+
+            {/* Link to 58+ Pet Food Section */}
+            <div className="p-6 rounded-3xl bg-gradient-to-br from-emerald-900 to-stone-900 text-white shadow-xl space-y-3 relative overflow-hidden">
+              <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-emerald-300">
+                <Utensils className="w-5 h-5" />
+              </div>
+              <h3 className="text-base font-bold text-white">
+                58+ Curated Pet Foods
+              </h3>
+              <p className="text-xs text-emerald-100/90 leading-relaxed">
+                Order dry kibble, wet cans, raw bites, and clinical prescription diets with doorstep delivery or 45-min local clinic pickup.
+              </p>
+              <button
+                onClick={() => setAppTab('food')}
+                className="w-full py-2.5 px-4 rounded-xl bg-white text-emerald-950 font-bold text-xs hover:bg-emerald-50 transition-colors shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <span>Browse Food Pantry & Vault</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
 
           </div>

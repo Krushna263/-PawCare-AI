@@ -122,16 +122,31 @@ export type ProductCategory =
   | 'Food'
   | 'Treats'
   | 'Toys'
+  | 'Skincare'
   | 'Grooming'
+  | 'Hygiene'
   | 'Beds'
   | 'Bowls'
-  | 'Leashes'
-  | 'Hygiene';
+  | 'Leashes';
+
+export type FoodType = 
+  | 'Dry Kibble'
+  | 'Wet & Canned'
+  | 'Raw & Freeze-Dried'
+  | 'Veterinary Diet'
+  | 'Organic / Grain-Free'
+  | 'Treats & Broths'
+  | 'Small Pet & Bird';
 
 export interface Product {
   id: string;
   name: string;
   category: ProductCategory;
+  foodType?: FoodType;
+  brand?: string;
+  packSize?: string;
+  calories?: string;
+  healthBenefit?: string;
   shortDescription: string;
   price: number;
   rating: number;
@@ -147,6 +162,40 @@ export interface CartItem {
   quantity: number;
 }
 
+export type OrderFulfillment = 'online' | 'offline_pickup';
+
+export interface PickupHub {
+  id: string;
+  name: string;
+  address: string;
+  readyTime: string;
+  hours: string;
+  phone: string;
+  counterNotice?: string;
+}
+
+export interface Order {
+  id: string;
+  orderNumber: string;
+  createdAt: string;
+  items: CartItem[];
+  subtotal: number;
+  deliveryFee: number;
+  total: number;
+  fulfillment: OrderFulfillment;
+  shippingAddress?: string;
+  deliverySpeed?: string;
+  courierName?: string;
+  trackingNumber?: string;
+  estimatedDelivery?: string;
+  pickupHub?: PickupHub;
+  pickupCode?: string;
+  pickupContactName?: string;
+  pickupContactPhone?: string;
+  paymentMethod: 'card' | 'upi' | 'cod' | 'pay_at_counter';
+  status: 'Processing' | 'Ready for Pickup' | 'Out for Delivery' | 'Delivered' | 'Picked Up';
+}
+
 export interface ChatMessage {
   id: string;
   sender: 'user' | 'assistant';
@@ -155,12 +204,35 @@ export interface ChatMessage {
   isEmergencyAlert?: boolean;
 }
 
+export type UserRole = 'user' | 'admin';
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  avatarUrl: string;
+  phone?: string;
+  address?: string;
+  memberSince: string;
+  notificationPreferences: {
+    email: boolean;
+    sms: boolean;
+    feedingAlerts: boolean;
+    appointmentReminders: boolean;
+  };
+}
+
 export type NavTab = 
   | 'home'
   | 'pet'
   | 'feeding'
+  | 'food'
   | 'seasonal'
   | 'vet'
   | 'store'
   | 'reminders'
-  | 'assistant';
+  | 'assistant'
+  | 'user_panel'
+  | 'admin_panel';
+

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { ImageWithFallback } from './ImageWithFallback';
+import { OFFLINE_PICKUP_HUBS } from '../../data/petFoodData';
+import { PickupHub, Order } from '../../types';
 import { 
   ShoppingBag, 
   X, 
@@ -9,7 +11,11 @@ import {
   Trash2, 
   ArrowRight, 
   Check, 
-  CreditCard 
+  CreditCard,
+  Truck,
+  Store,
+  MapPin,
+  QrCode
 } from 'lucide-react';
 
 export const CartDrawer: React.FC = () => {
@@ -21,35 +27,56 @@ export const CartDrawer: React.FC = () => {
     isCartOpen, 
     setIsCartOpen,
     activePet,
+    placeOrder,
     showToast 
   } = useApp();
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [checkoutComplete, setCheckoutComplete] = useState(false);
-  const [shippingAddress, setShippingAddress] = useState('742 Evergreen Terrace, Springfield, OR');
+  const [fulfillmentType, setFulfillmentType] = useState<'online' | 'offline_pickup'>('online');
+  const [shippingAddress, setShippingAddress] = useState('742 Evergreen Terrace, Springfield, OR 97477');
+  const [selectedHub, setSelectedHub] = useState<PickupHub>(OFFLINE_PICKUP_HUBS[0]);
+  const [pickupContactName, setPickupContactName] = useState('Jane Doe');
+  const [pickupContactPhone, setPickupContactPhone] = useState('+1 (555) 321-7654');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'upi' | 'cod' | 'pay_at_counter'>('card');
+  const [lastPlacedOrder, setLastPlacedOrder] = useState<Order | null>(null);
 
   if (!isCartOpen) return null;
 
   // Cart Calculations
   const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-  const deliveryFee = subtotal === 0 ? 0 : subtotal > 50 ? 0 : 5.99;
+  const deliveryFee = fulfillmentType === 'online' ? (subtotal === 0 || subtotal > 45 ? 0 : 4.99) : 0;
   const total = subtotal + deliveryFee;
 
   const handleSimulatedCheckout = (e: React.FormEvent) => {
     e.preventDefault();
-    setCheckoutComplete(true);
-    clearCart();
-    showToast('Demo order placed successfully!', 'success');
+    if (cart.length === 0) return;
+
+    const newOrder = placeOrder({
+      items: [...cart],
+      subtotal,
+      deliveryFee,
+      total,
+      fulfillment: fulfillmentType,
+      shippingAddress: fulfillmentType === 'online' ? shippingAddress : undefined,
+      deliverySpeed: fulfillmentType === 'online' ? 'Standard Priority Courier (2-3 Business Days)' : undefined,
+      pickupHub: fulfillmentType === 'offline_pickup' ? selectedHub : undefined,
+      pickupContactName: fulfillmentType === 'offline_pickup' ? pickupContactName : undefined,
+      pickupContactPhone: fulfillmentType === 'offline_pickup' ? pickupContactPhone : undefined,
+      paymentMethod: fulfillmentType === 'offline_pickup' && paymentMethod === 'cod' ? 'pay_at_counter' : paymentMethod,
+    });
+
+    setLastPlacedOrder(newOrder);
+    setIsCheckingOut(false);
   };
 
   return (
     <>
       {/* SHOPPING CART DRAWER */}
-      <div className="fixed inset-0 z-50 flex justify-end bg-stone-950/40 backdrop-blur-xs animate-in fade-in duration-200">
-        <div className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-200">
+      <div className="fixed inset-0 z-50 flex justify-end bg-stone-950/40 backdrop-blur-md animate-in fade-in duration-200">
+        <div className="w-full max-w-md bg-white/90 backdrop-blur-2xl border-l border-white/80 h-full shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-200">
           
           {/* Cart Header */}
-          <div className="p-5 border-b border-stone-100 bg-[#FAF9F5] flex items-center justify-between">
+          <div className="p-5 border-b border-stone-200/60 bg-white/70 backdrop-blur-md flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShoppingBag className="w-5 h-5 text-emerald-800" />
               <h3 className="text-base font-bold text-stone-900">Your Companion Basket</h3>
@@ -168,15 +195,15 @@ export const CartDrawer: React.FC = () => {
         </div>
       </div>
 
-      {/* DEMO CHECKOUT MODAL */}
+      {/* DUAL FULFILLMENT CHECKOUT MODAL */}
       {isCheckingOut && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/60 backdrop-blur-xs">
-          <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden p-6 space-y-5 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/60 backdrop-blur-md overflow-y-auto">
+          <div className="relative w-full max-w-lg bg-white/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/80 overflow-hidden p-6 space-y-4 animate-in zoom-in-95 duration-200">
             
-            <div className="flex items-center justify-between border-b border-stone-100 pb-3">
+            <div className="flex items-center justify-between border-b border-stone-200/80 pb-3">
               <div>
-                <h3 className="text-base font-bold text-stone-900">Demo Order Checkout</h3>
-                <p className="text-xs text-stone-500">Shipping for {activePet.name}’s supplies</p>
+                <h3 className="text-base font-bold text-stone-900">Checkout Basket ({cart.length} items)</h3>
+                <p className="text-xs text-stone-500">Choose Online Home Delivery or Offline Store Pickup</p>
               </div>
               <button
                 onClick={() => setIsCheckingOut(false)}
@@ -187,36 +214,182 @@ export const CartDrawer: React.FC = () => {
             </div>
 
             <form onSubmit={handleSimulatedCheckout} className="space-y-4 text-xs">
+              
+              {/* FULFILLMENT MODE TOGGLE */}
               <div>
-                <label className="block font-semibold text-stone-800 mb-1">
-                  Delivery Destination
+                <label className="block font-bold text-stone-800 mb-1.5 uppercase tracking-wider text-[10px]">
+                  Fulfillment Mode:
                 </label>
-                <input
-                  type="text"
-                  value={shippingAddress}
-                  onChange={(e) => setShippingAddress(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-stone-300 text-stone-900 outline-none focus:border-emerald-700"
-                  required
-                />
-              </div>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setFulfillmentType('online')}
+                    className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                      fulfillmentType === 'online'
+                        ? 'bg-emerald-50/90 border-emerald-600 shadow-2xs'
+                        : 'bg-white border-stone-200 hover:bg-stone-50'
+                    }`}
+                  >
+                    <Truck className={`w-5 h-5 ${fulfillmentType === 'online' ? 'text-emerald-800' : 'text-stone-400'}`} />
+                    <div>
+                      <div className="font-bold text-stone-900">Online Delivery</div>
+                      <div className="text-[10px] text-stone-500">Shipped to door</div>
+                    </div>
+                  </button>
 
-              <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 space-y-2">
-                <div className="font-semibold text-stone-800 flex items-center gap-1.5">
-                  <CreditCard className="w-4 h-4 text-emerald-800" />
-                  <span>Simulated Payment Gateway (Test Card)</span>
+                  <button
+                    type="button"
+                    onClick={() => setFulfillmentType('offline_pickup')}
+                    className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                      fulfillmentType === 'offline_pickup'
+                        ? 'bg-amber-50/90 border-amber-600 shadow-2xs'
+                        : 'bg-white border-stone-200 hover:bg-stone-50'
+                    }`}
+                  >
+                    <Store className={`w-5 h-5 ${fulfillmentType === 'offline_pickup' ? 'text-amber-800' : 'text-stone-400'}`} />
+                    <div>
+                      <div className="font-bold text-stone-900">Store Pickup</div>
+                      <div className="text-[10px] text-stone-500">Ready in 45m</div>
+                    </div>
+                  </button>
                 </div>
-                <div className="font-mono text-stone-600 text-[11px]">
-                  •••• •••• •••• 4242 (PawCare Sandbox)
+              </div>
+
+              {/* ONLINE FIELDS */}
+              {fulfillmentType === 'online' ? (
+                <div className="space-y-3 p-3.5 rounded-2xl bg-stone-50 border border-stone-200 animate-in fade-in">
+                  <div>
+                    <label className="block font-semibold text-stone-800 mb-1">
+                      Delivery Address
+                    </label>
+                    <input
+                      type="text"
+                      value={shippingAddress}
+                      onChange={(e) => setShippingAddress(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-white border border-stone-300 text-stone-900 outline-none focus:border-emerald-700"
+                      required
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] text-stone-600 font-medium">
+                    <span>Priority Dispatch (2-3 Business Days)</span>
+                    <span className="text-emerald-700 font-bold">{subtotal > 45 ? 'FREE' : '$4.99'}</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3 p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 animate-in fade-in">
+                  <div>
+                    <label className="block font-semibold text-stone-800 mb-1">
+                      Select Partner Pickup Hub
+                    </label>
+                    <select
+                      value={selectedHub.id}
+                      onChange={(e) => {
+                        const h = OFFLINE_PICKUP_HUBS.find(x => x.id === e.target.value);
+                        if (h) setSelectedHub(h);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-white border border-stone-300 text-stone-900 outline-none font-medium cursor-pointer"
+                    >
+                      {OFFLINE_PICKUP_HUBS.map(h => (
+                        <option key={h.id} value={h.id}>
+                          {h.name} ({h.readyTime})
+                        </option>
+                      ))}
+                    </select>
+                    <p className="text-[11px] text-stone-600 mt-1 flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-stone-400 shrink-0" />
+                      <span>{selectedHub.address}</span>
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block font-semibold text-stone-800 mb-0.5 text-[11px]">
+                        Contact Name
+                      </label>
+                      <input
+                        type="text"
+                        value={pickupContactName}
+                        onChange={(e) => setPickupContactName(e.target.value)}
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-white border border-stone-300 text-stone-900 outline-none"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block font-semibold text-stone-800 mb-0.5 text-[11px]">
+                        Mobile Phone
+                      </label>
+                      <input
+                        type="tel"
+                        value={pickupContactPhone}
+                        onChange={(e) => setPickupContactPhone(e.target.value)}
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-white border border-stone-300 text-stone-900 outline-none font-mono"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* PAYMENT SELECTION */}
+              <div>
+                <label className="block font-bold text-stone-800 mb-1 uppercase tracking-wider text-[10px]">
+                  Payment Method:
+                </label>
+                <div className="grid grid-cols-3 gap-2 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('card')}
+                    className={`p-2 rounded-xl border text-center font-medium transition-colors ${
+                      paymentMethod === 'card'
+                        ? 'bg-stone-900 text-white border-stone-900'
+                        : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'
+                    }`}
+                  >
+                    Card
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('upi')}
+                    className={`p-2 rounded-xl border text-center font-medium transition-colors ${
+                      paymentMethod === 'upi'
+                        ? 'bg-stone-900 text-white border-stone-900'
+                        : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'
+                    }`}
+                  >
+                    UPI / QR
+                  </button>
+                  {fulfillmentType === 'offline_pickup' ? (
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod('pay_at_counter')}
+                      className={`p-2 rounded-xl border text-center font-medium transition-colors ${
+                        paymentMethod === 'pay_at_counter'
+                          ? 'bg-amber-800 text-white border-amber-800'
+                          : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'
+                      }`}
+                    >
+                      Pay at Counter
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setPaymentMethod('cod')}
+                      className={`p-2 rounded-xl border text-center font-medium transition-colors ${
+                        paymentMethod === 'cod'
+                          ? 'bg-stone-900 text-white border-stone-900'
+                          : 'bg-white border-stone-200 text-stone-700 hover:bg-stone-50'
+                      }`}
+                    >
+                      COD
+                    </button>
+                  )}
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-[11px] leading-relaxed">
-                <span className="font-bold">Disclaimer:</span> This is a simulated checkout. PawCare does not connect to real credit card payment processors or physical delivery logistics.
-              </div>
-
-              <div className="pt-2 border-t border-stone-100 flex items-center justify-between">
+              {/* TOTAL & SUBMIT ROW */}
+              <div className="pt-2 border-t border-stone-200 flex items-center justify-between">
                 <div>
-                  <span className="text-stone-500 block text-[10px]">Total Demo Amount:</span>
+                  <span className="text-stone-500 block text-[10px]">Total Amount:</span>
                   <span className="font-mono text-base font-bold text-stone-900 tabular-nums">${total.toFixed(2)}</span>
                 </div>
 
@@ -224,55 +397,87 @@ export const CartDrawer: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setIsCheckingOut(false)}
-                    className="px-3.5 py-2 rounded-xl text-stone-600 hover:bg-stone-100"
+                    className="px-3 py-2 rounded-xl text-stone-600 hover:bg-stone-100 font-semibold"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-semibold shadow-xs flex items-center gap-1.5"
+                    className="px-5 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-semibold shadow-xs flex items-center gap-1.5 cursor-pointer"
                   >
                     <Check className="w-3.5 h-3.5" />
-                    <span>Place Demo Order</span>
+                    <span>Confirm Order</span>
                   </button>
                 </div>
               </div>
+
             </form>
 
           </div>
         </div>
       )}
 
-      {/* CHECKOUT RECEIPT MODAL */}
-      {checkoutComplete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/60 backdrop-blur-xs">
-          <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden p-6 space-y-4 text-center animate-in zoom-in-95 duration-200">
-            <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto">
+      {/* CHECKOUT RECEIPT & PASS MODAL */}
+      {lastPlacedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/60 backdrop-blur-md overflow-y-auto">
+          <div className="relative w-full max-w-md bg-white/95 backdrop-blur-2xl rounded-3xl shadow-[0_24px_64px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,1)] border border-white/80 overflow-hidden p-6 space-y-4 text-center animate-in zoom-in-95 duration-200 my-8">
+            <div className="w-14 h-14 rounded-full bg-emerald-100/90 text-emerald-800 flex items-center justify-center mx-auto shadow-xs">
               <Check className="w-8 h-8 stroke-[2.5]" />
             </div>
 
             <div className="space-y-1">
-              <h3 className="text-lg font-bold text-stone-900">
-                Order Confirmed!
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800">
+                {lastPlacedOrder.fulfillment === 'online' ? '🚚 Online Delivery Placed' : '🏪 Ready for Store Pickup'}
+              </span>
+              <h3 className="text-lg font-bold text-stone-900 pt-1">
+                Order #{lastPlacedOrder.orderNumber}
               </h3>
-              <p className="text-xs text-stone-500">
-                Demo receipt #PC-ORD-{Date.now().toString().slice(-6)}
-              </p>
             </div>
 
-            <p className="text-xs text-stone-600 leading-relaxed">
-              Supplies scheduled for simulated delivery to <span className="font-semibold text-stone-800">{shippingAddress}</span>.
-            </p>
+            {lastPlacedOrder.fulfillment === 'online' ? (
+              <div className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 text-left text-xs space-y-1.5">
+                <div className="flex justify-between">
+                  <span className="text-stone-500">Tracking Code:</span>
+                  <span className="font-mono font-bold text-emerald-800">{lastPlacedOrder.trackingNumber}</span>
+                </div>
+                <div>
+                  <span className="text-stone-500 block text-[10px]">Destination:</span>
+                  <span className="font-medium text-stone-800">{lastPlacedOrder.shippingAddress}</span>
+                </div>
+                <div className="text-[11px] text-stone-600 pt-1 border-t border-stone-200">
+                  {lastPlacedOrder.estimatedDelivery} via Priority Dispatch.
+                </div>
+              </div>
+            ) : (
+              <div className="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200 text-left text-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-amber-800 block">Pickup Pass Code:</span>
+                    <span className="font-mono text-base font-extrabold text-amber-900">{lastPlacedOrder.pickupCode}</span>
+                  </div>
+                  <div className="w-10 h-10 bg-white rounded-lg border border-amber-300 flex items-center justify-center">
+                    <QrCode className="w-7 h-7 text-stone-800" />
+                  </div>
+                </div>
+                <div>
+                  <span className="text-[10px] text-amber-800 font-bold block">Pickup Counter:</span>
+                  <span className="font-semibold text-stone-900">{lastPlacedOrder.pickupHub?.name}</span>
+                  <p className="text-[10px] text-stone-600">{lastPlacedOrder.pickupHub?.address}</p>
+                </div>
+                <p className="text-[10px] text-stone-500 italic">
+                  Show your PIN at the dispensary counter for instant package collection.
+                </p>
+              </div>
+            )}
 
             <button
               onClick={() => {
-                setCheckoutComplete(false);
-                setIsCheckingOut(false);
+                setLastPlacedOrder(null);
                 setIsCartOpen(false);
               }}
-              className="w-full py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-xs transition-colors cursor-pointer"
+              className="w-full py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-semibold text-xs transition-colors cursor-pointer shadow-xs"
             >
-              Continue Shopping
+              Done & Return to Store
             </button>
           </div>
         </div>

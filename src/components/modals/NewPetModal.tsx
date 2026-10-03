@@ -115,11 +115,11 @@ export const NewPetModal: React.FC<NewPetModalProps> = ({ isOpen, onClose, editi
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/60 backdrop-blur-xs overflow-y-auto">
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/60 backdrop-blur-md overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-white/95 backdrop-blur-2xl rounded-3xl shadow-[0_24px_64px_rgba(0,0,0,0.25),inset_0_1px_1px_rgba(255,255,255,1)] border border-white/80 overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-200">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-stone-100 bg-[#FAF9F5]">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-stone-200/60 bg-white/70 backdrop-blur-md">
           <div>
             <h2 className="text-xl font-bold text-stone-900">
               {editingPet ? `Edit ${editingPet.name}’s Profile` : 'Register New Companion'}

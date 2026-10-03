@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { NavTab } from '../types';
 import { 
   Home, 
   Heart, 
   Utensils, 
+  UtensilsCrossed,
   SunMedium, 
   Stethoscope, 
   ShoppingBag, 
@@ -14,7 +15,11 @@ import {
   Plus, 
   Menu, 
   X,
-  PawPrint
+  PawPrint,
+  Check,
+  User,
+  ShieldCheck,
+  ArrowRightLeft
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -29,7 +34,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
     activePet, 
     setActivePetId, 
     cart, 
-    setIsCartOpen 
+    setIsCartOpen,
+    currentUser,
+    switchRole
   } = useApp();
 
   const [isPetDropdownOpen, setIsPetDropdownOpen] = useState(false);
@@ -37,15 +44,40 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
 
   const cartTotalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+  // Cart Popup Animation State
+  const [isCartPopping, setIsCartPopping] = useState(false);
+  const [showCartFlyout, setShowCartFlyout] = useState(false);
+  const prevCartCountRef = useRef(cartTotalCount);
+
+  useEffect(() => {
+    if (cartTotalCount > prevCartCountRef.current) {
+      setIsCartPopping(true);
+      setShowCartFlyout(true);
+
+      const popTimer = setTimeout(() => setIsCartPopping(false), 600);
+      const flyoutTimer = setTimeout(() => setShowCartFlyout(false), 2400);
+
+      prevCartCountRef.current = cartTotalCount;
+
+      return () => {
+        clearTimeout(popTimer);
+        clearTimeout(flyoutTimer);
+      };
+    } else {
+      prevCartCountRef.current = cartTotalCount;
+    }
+  }, [cartTotalCount]);
+
   const navItems: { id: NavTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'pet', label: 'My Pet', icon: Heart },
+    { id: 'user_panel', label: 'User Panel', icon: User },
+    { id: 'admin_panel', label: 'Admin Panel', icon: ShieldCheck },
+    { id: 'food', label: 'Pet Food', icon: UtensilsCrossed },
     { id: 'feeding', label: 'Feeding', icon: Utensils },
-    { id: 'seasonal', label: 'Seasonal Care', icon: SunMedium },
     { id: 'vet', label: 'Vet Care', icon: Stethoscope },
     { id: 'store', label: 'Pet Store', icon: ShoppingBag },
-    { id: 'reminders', label: 'Reminders', icon: Bell },
-    { id: 'assistant', label: 'AI Care Assistant', icon: Bot },
+    { id: 'assistant', label: 'AI Care', icon: Bot },
   ];
 
   const handleNavClick = (tab: NavTab) => {
@@ -57,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
   return (
     <>
       {/* Top Navigation Bar adhering to the 3-Zone Contract */}
-      <header className="sticky top-0 z-40 bg-[#FAF9F5]/90 backdrop-blur-md border-b border-stone-200/80 transition-all">
+      <header className="sticky top-0 z-40 bg-[#FAF9F5]/75 backdrop-blur-xl border-b border-stone-200/60 shadow-[0_4px_24px_rgba(0,0,0,0.02),inset_0_-1px_0_rgba(255,255,255,0.8)] transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           
           {/* Zone 1: Single text element wordmark */}
@@ -180,12 +212,44 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
           </nav>
 
           {/* Zone 3: 1-2 Primary Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            {/* User / Admin Portal Switcher Pill */}
+            <div className="flex items-center gap-1 p-0.5 rounded-full bg-white/70 backdrop-blur-md border border-white/80 shadow-[0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)]">
+              <button
+                onClick={() => setActiveTab(currentUser.role === 'admin' ? 'admin_panel' : 'user_panel')}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'user_panel' || activeTab === 'admin_panel'
+                    ? currentUser.role === 'admin'
+                      ? 'bg-stone-900 text-amber-300 shadow-2xs'
+                      : 'bg-emerald-800 text-white shadow-2xs'
+                    : 'text-stone-700 hover:text-stone-900'
+                }`}
+                title={`Open ${currentUser.role === 'admin' ? 'Admin Panel' : 'User Panel'}`}
+              >
+                {currentUser.role === 'admin' ? (
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                ) : (
+                  <User className="w-3.5 h-3.5 text-emerald-600" />
+                )}
+                <span className="hidden sm:inline">
+                  {currentUser.role === 'admin' ? 'Admin Panel' : 'User Panel'}
+                </span>
+              </button>
+
+              <button
+                onClick={() => switchRole(currentUser.role === 'admin' ? 'user' : 'admin')}
+                className="p-1 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition-colors cursor-pointer"
+                title={`Switch Role to ${currentUser.role === 'admin' ? 'Pet Parent' : 'Clinic Administrator'}`}
+              >
+                <ArrowRightLeft className="w-3 h-3" />
+              </button>
+            </div>
+
             {/* Active Pet Selector / Profile Button */}
             <div className="relative">
               <button
                 onClick={() => setIsPetDropdownOpen(!isPetDropdownOpen)}
-                className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200/70 border border-stone-200 text-stone-800 text-xs font-medium transition-colors shadow-2xs focus:outline-none"
+                className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white/70 hover:bg-white/90 backdrop-blur-md border border-white/80 text-stone-800 text-xs font-medium transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)] focus:outline-none cursor-pointer"
                 aria-expanded={isPetDropdownOpen}
               >
                 <img
@@ -200,10 +264,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
               {/* Pet Dropdown */}
               {isPetDropdownOpen && (
                 <div 
-                  className="absolute right-0 mt-2 w-56 rounded-xl bg-white border border-stone-200 shadow-xl p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150"
+                  className="absolute right-0 mt-2 w-60 rounded-2xl bg-white/85 backdrop-blur-2xl border border-white/80 shadow-[0_16px_40px_-8px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,1)] p-1.5 z-50 animate-in fade-in zoom-in-95 duration-150"
                   onMouseLeave={() => setIsPetDropdownOpen(false)}
                 >
-                  <div className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-stone-600 border-b border-stone-100">
+                  <div className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-stone-600 border-b border-stone-100/80">
                     Your Companions
                   </div>
                   <div className="py-1">
@@ -215,10 +279,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
                           setIsPetDropdownOpen(false);
                           setActiveTab('pet');
                         }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-left transition-colors ${
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-left transition-colors cursor-pointer ${
                           pet.id === activePet.id
                             ? 'bg-emerald-50 text-emerald-900 font-semibold'
-                            : 'text-stone-700 hover:bg-stone-50'
+                            : 'text-stone-700 hover:bg-white/80'
                         }`}
                       >
                         <img
@@ -237,13 +301,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
                     ))}
                   </div>
 
-                  <div className="pt-1 border-t border-stone-100">
+                  <div className="pt-1 border-t border-stone-100/80">
                     <button
                       onClick={() => {
                         setIsPetDropdownOpen(false);
                         onOpenNewPetModal();
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-emerald-800 hover:bg-emerald-50 transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium text-emerald-800 hover:bg-emerald-50/80 transition-colors cursor-pointer"
                     >
                       <Plus className="w-4 h-4 shrink-0" />
                       <span>Add New Pet Profile</span>
@@ -253,24 +317,58 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
               )}
             </div>
 
-            {/* Shopping Cart Trigger */}
-            <button
-              onClick={() => setIsCartOpen(true)}
-              className="relative p-2 rounded-full hover:bg-stone-100 text-stone-700 transition-colors focus:outline-none"
-              aria-label="Open Shopping Cart"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {cartTotalCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-700 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-xs">
-                  {cartTotalCount}
-                </span>
+            {/* Shopping Cart Trigger with Animated Popup */}
+            <div className="relative">
+              <button
+                onClick={() => setIsCartOpen(true)}
+                className={`relative p-2 rounded-full backdrop-blur-md border text-stone-700 hover:text-emerald-800 transition-all duration-300 focus:outline-none cursor-pointer ${
+                  isCartPopping
+                    ? 'animate-cart-pop bg-emerald-50 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.45),inset_0_1px_1px_rgba(255,255,255,1)] ring-2 ring-emerald-500/50 ring-offset-2 ring-offset-[#FAF9F5]'
+                    : 'bg-white/70 hover:bg-white/90 border-white/80 shadow-[0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)]'
+                }`}
+                aria-label="Open Shopping Cart"
+              >
+                <ShoppingBag className={`w-5 h-5 transition-transform duration-300 ${isCartPopping ? 'scale-110 text-emerald-800' : ''}`} />
+                {cartTotalCount > 0 && (
+                  <span
+                    key={cartTotalCount}
+                    className={`absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-emerald-700 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-xs ${
+                      isCartPopping ? 'animate-badge-pop bg-emerald-600 ring-2 ring-white' : ''
+                    }`}
+                  >
+                    {cartTotalCount}
+                    {isCartPopping && (
+                      <span className="absolute -inset-0.5 rounded-full bg-emerald-400 opacity-75 animate-ping pointer-events-none" />
+                    )}
+                  </span>
+                )}
+              </button>
+
+              {/* Flyout Notification Popup on Add-to-Cart */}
+              {showCartFlyout && (
+                <div 
+                  className="absolute right-0 top-full mt-2.5 w-52 p-3 rounded-2xl bg-white/95 backdrop-blur-2xl border border-white/90 shadow-[0_16px_36px_-6px_rgba(6,78,59,0.22),inset_0_1px_1px_rgba(255,255,255,1)] flex items-center gap-2.5 z-50 pointer-events-none animate-in fade-in slide-in-from-top-2 duration-300"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <div className="w-7 h-7 rounded-full bg-emerald-100/90 text-emerald-800 flex items-center justify-center shrink-0 shadow-2xs">
+                    <Check className="w-4 h-4 stroke-[2.5]" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[11px] font-bold text-stone-900 leading-tight">Added to Basket!</div>
+                    <div className="text-[10px] text-emerald-800 font-semibold leading-tight mt-0.5 font-mono">
+                      {cartTotalCount} {cartTotalCount === 1 ? 'item' : 'items'} in cart
+                    </div>
+                  </div>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
+                </div>
               )}
-            </button>
+            </div>
 
             {/* Mobile Menu Hamburger */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-lg hover:bg-stone-100 text-stone-700 transition-colors"
+              className="lg:hidden p-2 rounded-xl bg-white/70 hover:bg-white/90 backdrop-blur-md border border-white/80 text-stone-700 transition-all shadow-2xs"
               aria-label="Toggle mobile menu"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -281,7 +379,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
 
         {/* Mobile Dropdown Menu Drawer */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-stone-200 bg-white/95 px-4 pt-3 pb-6 shadow-xl animate-in slide-in-from-top duration-200">
+          <div className="lg:hidden border-t border-white/60 bg-white/90 backdrop-blur-2xl px-4 pt-3 pb-6 shadow-2xl animate-in slide-in-from-top duration-200">
             <div className="grid grid-cols-2 gap-2 mb-4">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -292,8 +390,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
                     onClick={() => handleNavClick(item.id)}
                     className={`flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-medium text-left transition-colors ${
                       isActive
-                        ? 'bg-emerald-50 text-emerald-900 font-semibold'
-                        : 'text-stone-700 hover:bg-stone-50'
+                        ? 'bg-emerald-50 text-emerald-900 font-semibold border border-emerald-200/60'
+                        : 'text-stone-700 hover:bg-white/80'
                     }`}
                   >
                     <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-emerald-700' : 'text-stone-400'}`} />
@@ -307,7 +405,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
                 setIsMobileMenuOpen(false);
                 onOpenNewPetModal();
               }}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-800 text-white rounded-xl text-xs font-medium hover:bg-emerald-900 transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-emerald-800 text-white rounded-xl text-xs font-semibold hover:bg-emerald-900 transition-colors shadow-sm"
             >
               <Plus className="w-4 h-4" />
               <span>Create Pet Profile</span>
@@ -317,12 +415,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
       </header>
 
       {/* Mobile Fixed Bottom Navigation Bar (Natural thumb reach, <=15% sticky height) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FAF9F5]/95 backdrop-blur-md border-t border-stone-200/90 pb-safe">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FAF9F5]/80 backdrop-blur-xl border-t border-white/70 shadow-[0_-4px_20px_rgba(0,0,0,0.03),inset_0_1px_0_rgba(255,255,255,0.8)] pb-safe">
         <div className="grid grid-cols-5 items-center h-14 px-2">
           {[
             { id: 'home', label: 'Home', icon: Home },
             { id: 'pet', label: 'My Pet', icon: Heart },
-            { id: 'feeding', label: 'Feeding', icon: Utensils },
+            { id: 'food', label: 'Pet Food', icon: UtensilsCrossed },
             { id: 'vet', label: 'Vet Care', icon: Stethoscope },
             { id: 'assistant', label: 'AI Care', icon: Bot },
           ].map((item) => {

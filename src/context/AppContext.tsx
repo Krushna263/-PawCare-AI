@@ -8,7 +8,12 @@ import {
   AppointmentStatus,
   Product, 
   CartItem, 
-  NavTab 
+  NavTab,
+  Order,
+  OrderFulfillment,
+  PickupHub,
+  UserProfile,
+  UserRole
 } from '../types';
 import { 
   INITIAL_PETS, 
@@ -17,6 +22,8 @@ import {
   VETERINARIANS, 
   PRODUCTS 
 } from '../data/mockData';
+import { PET_FOOD_LIST, OFFLINE_PICKUP_HUBS } from '../data/petFoodData';
+import { ADDITIONAL_STORE_PRODUCTS } from '../data/storeProducts';
 
 interface Toast {
   id: string;
@@ -24,14 +31,57 @@ interface Toast {
   message: string;
 }
 
+export const DEFAULT_USER: UserProfile = {
+  id: 'usr-sarah',
+  name: 'Sarah Jenkins',
+  email: 'sarah.jenkins@pawcare.org',
+  role: 'user',
+  avatarUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+  phone: '+1 (555) 234-5678',
+  address: '742 Evergreen Terrace, Springfield, OR 97477',
+  memberSince: 'March 2024',
+  notificationPreferences: {
+    email: true,
+    sms: true,
+    feedingAlerts: true,
+    appointmentReminders: true,
+  },
+};
+
+export const DEFAULT_ADMIN: UserProfile = {
+  id: 'adm-marcus',
+  name: 'Dr. Marcus Vance (Chief Vet & Admin)',
+  email: 'director.vance@pawcare-clinic.org',
+  role: 'admin',
+  avatarUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80',
+  phone: '+1 (555) 987-6543',
+  address: 'PawCare Central Hospital & Surgical Center, Suite 400',
+  memberSince: 'January 2023',
+  notificationPreferences: {
+    email: true,
+    sms: true,
+    feedingAlerts: false,
+    appointmentReminders: true,
+  },
+};
+
 interface AppContextType {
   activeTab: NavTab;
   setActiveTab: (tab: NavTab) => void;
+
+  // Authentication & Role
+  currentUser: UserProfile;
+  setCurrentUser: React.Dispatch<React.SetStateAction<UserProfile>>;
+  switchRole: (role: UserRole) => void;
+  updateUserProfile: (updates: Partial<UserProfile>) => void;
+
+  // Pets
   pets: Pet[];
   activePet: Pet;
   setActivePetId: (id: string) => void;
   addPet: (pet: Omit<Pet, 'id' | 'wellness'>) => void;
   updatePet: (pet: Pet) => void;
+  deletePet: (id: string) => void;
   
   // Feeding
   feedingSchedule: FeedingMeal[];
@@ -52,8 +102,15 @@ interface AppContextType {
   updateAppointmentStatus: (id: string, status: AppointmentStatus) => void;
   cancelAppointment: (id: string) => void;
   
-  // Store & Cart
+  // Store, Food & Inventory
   products: Product[];
+  petFoods: Product[];
+  toggleProductStock: (productId: string) => void;
+  addProduct: (product: Product) => void;
+  deleteProduct: (productId: string) => void;
+  updateProduct: (productId: string, updates: Partial<Product>) => void;
+
+  // Cart
   cart: CartItem[];
   addToCart: (product: Product, quantity?: number) => void;
   updateCartQuantity: (productId: string, quantity: number) => void;
@@ -61,6 +118,11 @@ interface AppContextType {
   clearCart: () => void;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
+
+  // Orders (Online Delivery & Offline Pickup)
+  orders: Order[];
+  placeOrder: (orderData: Omit<Order, 'id' | 'orderNumber' | 'createdAt' | 'status'>) => Order;
+  updateOrderStatus: (orderId: string, status: Order['status']) => void;
 
   // Toast notifications
   toasts: Toast[];
@@ -73,6 +135,89 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeTab, setActiveTab] = useState<NavTab>('home');
   
+  // User Authentication & Roles
+  const [currentUser, setCurrentUser] = useState<UserProfile>(() => {
+    try {
+      const saved = localStorage.getItem('pawcare_current_user');
+      return saved ? JSON.parse(saved) : DEFAULT_USER;
+    } catch {
+      return DEFAULT_USER;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('pawcare_current_user', JSON.stringify(currentUser));
+    } catch (e) {
+      console.warn(e);
+    }
+  }, [currentUser]);
+
+  const switchRole = (newRole: UserRole) => {
+    if (newRole === 'admin') {
+      setCurrentUser(DEFAULT_ADMIN);
+      setActiveTab('admin_panel');
+      showToast('Switched to Administrator Command Center', 'info');
+    } else {
+      setCurrentUser(DEFAULT_USER);
+      setActiveTab('user_panel');
+      showToast('Switched to Pet Parent Portal', 'info');
+    }
+  };
+
+  const updateUserProfile = (updates: Partial<UserProfile>) => {
+    setCurrentUser((prev) => ({ ...prev, ...updates }));
+    showToast('Profile updated successfully', 'success');
+  };
+
+  // Products & Inventory State
+  const [allProducts, setAllProducts] = useState<Product[]>(() => {
+    try {
+      const saved = localStorage.getItem('pawcare_all_products');
+      return saved ? JSON.parse(saved) : [...PRODUCTS, ...ADDITIONAL_STORE_PRODUCTS, ...PET_FOOD_LIST];
+    } catch {
+      return [...PRODUCTS, ...ADDITIONAL_STORE_PRODUCTS, ...PET_FOOD_LIST];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('pawcare_all_products', JSON.stringify(allProducts));
+    } catch (e) {
+      console.warn(e);
+    }
+  }, [allProducts]);
+
+  const toggleProductStock = (productId: string) => {
+    setAllProducts((prev) =>
+      prev.map((p) => {
+        if (p.id === productId) {
+          const nextStock = !p.inStock;
+          showToast(`${p.name} marked as ${nextStock ? 'In Stock' : 'Out of Stock'}`, 'info');
+          return { ...p, inStock: nextStock };
+        }
+        return p;
+      })
+    );
+  };
+
+  const addProduct = (product: Product) => {
+    setAllProducts((prev) => [product, ...prev]);
+    showToast(`Added "${product.name}" to catalog`, 'success');
+  };
+
+  const deleteProduct = (productId: string) => {
+    setAllProducts((prev) => prev.filter((p) => p.id !== productId));
+    showToast('Product removed from catalog', 'info');
+  };
+
+  const updateProduct = (productId: string, updates: Partial<Product>) => {
+    setAllProducts((prev) =>
+      prev.map((p) => (p.id === productId ? { ...p, ...updates } : p))
+    );
+    showToast('Product updated successfully', 'success');
+  };
+
   // Pets State
   const [pets, setPets] = useState<Pet[]>(() => {
     try {
@@ -366,6 +511,50 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setCart([]);
   };
 
+  // Orders State (Online Delivery & Offline Pickup)
+  const [orders, setOrders] = useState<Order[]>(() => {
+    try {
+      const saved = localStorage.getItem('pawcare_orders');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('pawcare_orders', JSON.stringify(orders));
+    } catch (e) {
+      console.warn(e);
+    }
+  }, [orders]);
+
+  const placeOrder = (orderData: Omit<Order, 'id' | 'orderNumber' | 'createdAt' | 'status'>): Order => {
+    const isOnline = orderData.fulfillment === 'online';
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+    const newOrder: Order = {
+      ...orderData,
+      id: `ord-${Date.now()}`,
+      orderNumber: `PC-${isOnline ? 'DEL' : 'PCK'}-${Date.now().toString().slice(-4)}${randomSuffix}`,
+      createdAt: new Date().toISOString(),
+      status: isOnline ? 'Processing' : 'Ready for Pickup',
+      trackingNumber: isOnline ? `TRK-${Math.random().toString(36).substring(2, 9).toUpperCase()}` : undefined,
+      pickupCode: !isOnline ? `PCPASS-${Math.floor(100000 + Math.random() * 900000)}` : undefined,
+      courierName: isOnline ? 'PawCare Express Priority Dispatch' : undefined,
+      estimatedDelivery: isOnline ? (orderData.deliverySpeed || 'Estimated within 2 business days') : undefined,
+    };
+
+    setOrders((prev) => [newOrder, ...prev]);
+    clearCart();
+    showToast(
+      isOnline 
+        ? `Order #${newOrder.orderNumber} placed for home delivery!` 
+        : `Order #${newOrder.orderNumber} confirmed! Ready for counter pickup.`,
+      'success'
+    );
+    return newOrder;
+  };
+
   const addPet = (petData: Omit<Pet, 'id' | 'wellness'>) => {
     const newPet: Pet = {
       ...petData,
@@ -388,6 +577,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast(`${updated.name}'s profile updated`, 'success');
   };
 
+  const deletePet = (id: string) => {
+    setPets((prev) => prev.filter((p) => p.id !== id));
+    showToast('Pet profile removed', 'info');
+  };
+
+  const updateOrderStatus = (orderId: string, status: Order['status']) => {
+    setOrders((prev) =>
+      prev.map((o) => (o.id === orderId ? { ...o, status } : o))
+    );
+    showToast(`Order status updated to: "${status}"`, 'success');
+  };
+
   // Toast notifications
   const [toasts, setToasts] = useState<Toast[]>([]);
 
@@ -408,11 +609,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         activeTab,
         setActiveTab,
+        currentUser,
+        setCurrentUser,
+        switchRole,
+        updateUserProfile,
         pets,
         activePet,
         setActivePetId,
         addPet,
         updatePet,
+        deletePet,
         feedingSchedule,
         toggleMealCompletion,
         updateMealTime,
@@ -426,7 +632,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         bookAppointment,
         updateAppointmentStatus,
         cancelAppointment,
-        products: PRODUCTS,
+        products: allProducts,
+        petFoods: allProducts.filter((p) => p.category === 'Food'),
+        toggleProductStock,
+        addProduct,
+        deleteProduct,
+        updateProduct,
         cart,
         addToCart,
         updateCartQuantity,
@@ -434,6 +645,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         clearCart,
         isCartOpen,
         setIsCartOpen,
+        orders,
+        placeOrder,
+        updateOrderStatus,
         toasts,
         showToast,
         removeToast,

@@ -122,7 +122,7 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Visual Profile Card */}
-        <div className="lg:col-span-5 bg-white rounded-3xl p-6 border border-stone-200/80 shadow-xs flex flex-col justify-between">
+        <div className="lg:col-span-5 bg-white/70 backdrop-blur-xl rounded-3xl p-6 border border-white/80 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,1)] flex flex-col justify-between">
           <div className="space-y-6">
             <div className="relative rounded-2xl overflow-hidden aspect-4/3 bg-stone-100 border border-stone-200/90 shadow-inner">
               <ImageWithFallback
@@ -203,9 +203,9 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             
             {/* Card A: Next Feeding */}
-            <div className="p-5 rounded-2xl bg-white border border-stone-200/80 shadow-xs flex flex-col justify-between">
+            <div className="p-5 rounded-2xl bg-white/75 backdrop-blur-xl border border-white/80 shadow-[0_6px_24px_-4px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:bg-white/90 hover:border-amber-600/30 transition-all flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-800 flex items-center justify-center shadow-2xs">
                   <Utensils className="w-4 h-4 stroke-[2]" />
                 </div>
                 <span className="text-[11px] font-semibold text-amber-800 bg-amber-50/80 px-2.5 py-0.5 rounded-full">
@@ -225,7 +225,7 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
               </div>
               <button
                 onClick={() => setActiveTab('feeding')}
-                className="text-xs font-semibold text-stone-700 hover:text-emerald-800 inline-flex items-center gap-1 pt-2 border-t border-stone-100"
+                className="text-xs font-semibold text-stone-700 hover:text-emerald-800 inline-flex items-center gap-1 pt-2 border-t border-stone-100 cursor-pointer"
               >
                 <span>Open Feeding Planner</span>
                 <ArrowRight className="w-3 h-3" />
@@ -233,9 +233,9 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
             </div>
 
             {/* Card B: Upcoming Reminder */}
-            <div className="p-5 rounded-2xl bg-white border border-stone-200/80 shadow-xs flex flex-col justify-between">
+            <div className="p-5 rounded-2xl bg-white/75 backdrop-blur-xl border border-white/80 shadow-[0_6px_24px_-4px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:bg-white/90 hover:border-emerald-600/30 transition-all flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center shadow-2xs">
                   <Bell className="w-4 h-4 stroke-[2]" />
                 </div>
                 <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50/80 px-2.5 py-0.5 rounded-full">
@@ -255,7 +255,7 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
               </div>
               <button
                 onClick={() => setActiveTab('reminders')}
-                className="text-xs font-semibold text-stone-700 hover:text-emerald-800 inline-flex items-center gap-1 pt-2 border-t border-stone-100"
+                className="text-xs font-semibold text-stone-700 hover:text-emerald-800 inline-flex items-center gap-1 pt-2 border-t border-stone-100 cursor-pointer"
               >
                 <span>Manage Reminders</span>
                 <ArrowRight className="w-3 h-3" />
@@ -263,9 +263,9 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
             </div>
 
             {/* Card C: Upcoming Vaccination */}
-            <div className="p-5 rounded-2xl bg-white border border-stone-200/80 shadow-xs flex flex-col justify-between">
+            <div className="p-5 rounded-2xl bg-white/75 backdrop-blur-xl border border-white/80 shadow-[0_6px_24px_-4px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:bg-white/90 hover:border-rose-600/30 transition-all flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-800 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-800 flex items-center justify-center shadow-2xs">
                   <Heart className="w-4 h-4 stroke-[2]" />
                 </div>
                 <span className="text-[11px] font-semibold text-rose-800 bg-rose-50/80 px-2.5 py-0.5 rounded-full">
@@ -285,7 +285,7 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
               </div>
               <button
                 onClick={() => setActiveTab('reminders')}
-                className="text-xs font-semibold text-stone-700 hover:text-rose-800 inline-flex items-center gap-1 pt-2 border-t border-stone-100"
+                className="text-xs font-semibold text-stone-700 hover:text-rose-800 inline-flex items-center gap-1 pt-2 border-t border-stone-100 cursor-pointer"
               >
                 <span>View Vaccination Log</span>
                 <ArrowRight className="w-3 h-3" />
@@ -293,9 +293,9 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
             </div>
 
             {/* Card D: Vet Appointment */}
-            <div className="p-5 rounded-2xl bg-white border border-stone-200/80 shadow-xs flex flex-col justify-between">
+            <div className="p-5 rounded-2xl bg-white/75 backdrop-blur-xl border border-white/80 shadow-[0_6px_24px_-4px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.95)] hover:bg-white/90 hover:border-teal-600/30 transition-all flex flex-col justify-between">
               <div className="flex items-center justify-between">
-                <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-800 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-800 flex items-center justify-center shadow-2xs">
                   <Stethoscope className="w-4 h-4 stroke-[2]" />
                 </div>
                 <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${
@@ -319,7 +319,7 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
               </div>
               <button
                 onClick={() => setActiveTab('vet')}
-                className="text-xs font-semibold text-stone-700 hover:text-teal-800 inline-flex items-center gap-1 pt-2 border-t border-stone-100"
+                className="text-xs font-semibold text-stone-700 hover:text-teal-800 inline-flex items-center gap-1 pt-2 border-t border-stone-100 cursor-pointer"
               >
                 <span>{nextAppointment ? 'View Appointment' : 'Book a Vet'}</span>
                 <ArrowRight className="w-3 h-3" />
@@ -329,7 +329,7 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
           </div>
 
           {/* 4. PET WELLNESS SNAPSHOT (Section 9) */}
-          <div className="p-6 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-5">
+          <div className="p-6 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,1)] space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <h3 className="text-lg font-bold text-stone-900">

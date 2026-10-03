@@ -25,3 +25,43 @@ html {
   scroll-behavior: smooth;
 }
 
+@keyframes ai-shimmer {
+  0% { transform: translateX(-150%) skewX(-15deg); }
+  100% { transform: translateX(250%) skewX(-15deg); }
+}
+
+@keyframes ai-glow-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.95; transform: scale(1.04); }
+}
+
+.animate-ai-shimmer {
+  animation: ai-shimmer 2.8s ease-in-out infinite;
+}
+
+.animate-ai-glow {
+  animation: ai-glow-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes cart-pop {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.22); }
+  60% { transform: scale(0.92); }
+  85% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes badge-pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.35); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-cart-pop {
+  animation: cart-pop 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.animate-badge-pop {
+  animation: badge-pop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
