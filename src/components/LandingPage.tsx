@@ -14,7 +14,8 @@ import {
   ShieldCheck, 
   Check, 
   Sparkles,
-  PawPrint
+  PawPrint,
+  Crown
 } from 'lucide-react';
 
 interface LandingPageProps {
@@ -33,11 +34,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
             <div className="lg:col-span-6 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-900 text-xs font-medium">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50/90 border border-emerald-200/90 text-emerald-950 text-xs font-semibold shadow-2xs">
                 <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
-                <span>Modern Veterinary-Tech Ecosystem</span>
+                <span>✦ AI Powered Companion Platform</span>
                 <span className="text-emerald-400">·</span>
-                <span>AI-Assisted</span>
+                <span>Veterinary Aligned</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-stone-900 leading-[1.1] text-balance">
@@ -95,13 +96,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
                 />
                 
                 {/* Floating Quick Insight Card */}
-                <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-xs bg-white/75 backdrop-blur-xl p-4 rounded-2xl border border-white/80 shadow-[0_12px_32px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.95)] animate-float-gentle">
+                <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-auto sm:max-w-xs bg-white/80 backdrop-blur-xl p-4 rounded-2xl border border-white/80 shadow-[0_12px_32px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.95)] animate-float-gentle">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-emerald-50/90 text-emerald-800 flex items-center justify-center shrink-0 shadow-2xs">
                       <PawPrint className="w-5 h-5 fill-emerald-800" />
                     </div>
                     <div>
-                      <div className="text-xs font-semibold text-stone-900">Current Companion: {activePet.name}</div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold text-stone-900">{activePet.name}</span>
+                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100/90 px-1.5 py-0.2 rounded-full border border-emerald-200/60">✦ AI Pet Insights</span>
+                      </div>
                       <div className="text-[11px] text-stone-600">{activePet.breed} · Next meal 7:30 PM</div>
                     </div>
                   </div>
@@ -132,8 +136,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
             className="group p-6 rounded-3xl bg-white/45 hover:bg-white/65 backdrop-blur-2xl border border-white/70 hover:border-white/90 shadow-[inset_0_1.5px_1px_0_rgba(255,255,255,0.95),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_10px_30px_-5px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.02)] hover:shadow-[inset_0_1.5px_1.5px_0_rgba(255,255,255,1),0_20px_40px_-8px_rgba(6,78,59,0.08),0_6px_16px_-3px_rgba(0,0,0,0.03)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-emerald-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
-                <Heart className="w-6 h-6 stroke-[1.8]" />
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-emerald-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
+                  <Heart className="w-6 h-6 stroke-[1.8]" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-100/90 text-emerald-900 text-[10px] font-bold border border-emerald-200/80">
+                  ✦ Personalized by AI
+                </span>
               </div>
               <h3 className="text-lg font-bold text-stone-900 group-hover:text-emerald-900 transition-colors">
                 Personalized Pet Care
@@ -154,8 +163,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
             className="group p-6 rounded-3xl bg-white/45 hover:bg-white/65 backdrop-blur-2xl border border-white/70 hover:border-white/90 shadow-[inset_0_1.5px_1px_0_rgba(255,255,255,0.95),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_10px_30px_-5px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.02)] hover:shadow-[inset_0_1.5px_1.5px_0_rgba(255,255,255,1),0_20px_40px_-8px_rgba(217,119,6,0.08),0_6px_16px_-3px_rgba(0,0,0,0.03)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-amber-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
-                <Utensils className="w-6 h-6 stroke-[1.8]" />
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-amber-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
+                  <Utensils className="w-6 h-6 stroke-[1.8]" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-100/90 text-amber-900 text-[10px] font-bold border border-amber-200/80">
+                  ✦ AI Calibrated Rhythms
+                </span>
               </div>
               <h3 className="text-lg font-bold text-stone-900 group-hover:text-amber-900 transition-colors">
                 Feeding Guidance
@@ -176,8 +190,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
             className="group p-6 rounded-3xl bg-white/45 hover:bg-white/65 backdrop-blur-2xl border border-white/70 hover:border-white/90 shadow-[inset_0_1.5px_1px_0_rgba(255,255,255,0.95),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_10px_30px_-5px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.02)] hover:shadow-[inset_0_1.5px_1.5px_0_rgba(255,255,255,1),0_20px_40px_-8px_rgba(13,148,136,0.08),0_6px_16px_-3px_rgba(0,0,0,0.03)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 cursor-pointer flex flex-col justify-between"
           >
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-teal-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
-                <Stethoscope className="w-6 h-6 stroke-[1.8]" />
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-teal-800 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
+                  <Stethoscope className="w-6 h-6 stroke-[1.8]" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-teal-100/90 text-teal-900 text-[10px] font-bold border border-teal-200/80">
+                  ✦ AI Triage Assistant
+                </span>
               </div>
               <h3 className="text-lg font-bold text-stone-900 group-hover:text-teal-900 transition-colors">
                 Veterinary Appointments
@@ -258,6 +277,33 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
             </div>
           </div>
 
+          {/* Card 7: Accessories Boutique & Fashion Studio */}
+          <div 
+            onClick={() => setActiveTab('store')}
+            className="group p-6 rounded-3xl bg-white/45 hover:bg-white/65 backdrop-blur-2xl border border-white/70 hover:border-white/90 shadow-[inset_0_1.5px_1px_0_rgba(255,255,255,0.95),inset_0_-1px_1px_0_rgba(0,0,0,0.03),0_10px_30px_-5px_rgba(0,0,0,0.05),0_4px_12px_-2px_rgba(0,0,0,0.02)] hover:shadow-[inset_0_1.5px_1.5px_0_rgba(255,255,255,1),0_20px_40px_-8px_rgba(217,119,6,0.08),0_6px_16px_-3px_rgba(0,0,0,0.03)] hover:-translate-y-1 active:scale-[0.99] transition-all duration-300 cursor-pointer flex flex-col justify-between"
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 text-amber-700 flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_2px_8px_rgba(0,0,0,0.04)]">
+                  <Crown className="w-6 h-6 stroke-[1.8]" />
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-100/90 text-amber-900 text-[10px] font-bold border border-amber-200/80">
+                  ✦ AI Fit Matcher
+                </span>
+              </div>
+              <h3 className="text-lg font-bold text-stone-900 group-hover:text-amber-800 transition-colors">
+                Accessories & Fashion Studio
+              </h3>
+              <p className="text-sm text-stone-600 leading-relaxed">
+                Tuscan leather collars, custom brass tags, velvet step-in harnesses, and weather-proof apparel tailored to your pet's size.
+              </p>
+            </div>
+            <div className="pt-6 flex items-center gap-1 text-xs font-semibold text-amber-800 group-hover:translate-x-1 transition-transform">
+              <span>Explore Boutique & Apparel</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
+          </div>
+
         </div>
 
         {/* Feature Spotlight: PawCare AI */}
@@ -272,8 +318,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
 
           <div className="relative z-10 max-w-2xl space-y-4">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-200 text-xs font-medium shadow-xs">
-              <Bot className="w-3.5 h-3.5 text-emerald-300" />
-              <span>Context-Aware Pet Companion AI</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+              <span>✦ Ask PawCare AI</span>
             </div>
             <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white drop-shadow-xs">
               Instant answers tailored to your pet's exact profile.
@@ -540,9 +586,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
           <div className="pt-6 border-t border-stone-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-600">
             <div>
               © 2026 PawCare Inc. All rights reserved.
-            </div>
-            <div className="text-[11px] text-stone-600 text-center sm:text-right max-w-md">
-              Disclaimer: Simulated features (vet booking, store checkout) are for prototype demonstration and not affiliated with actual medical clinics or payment gateways.
             </div>
           </div>
 

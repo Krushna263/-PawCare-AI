@@ -63,6 +63,9 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
           <div className="flex items-center gap-2 text-xs font-semibold text-emerald-800 uppercase tracking-wider mb-1">
             <PawPrint className="w-3.5 h-3.5 fill-emerald-800" />
             <span>Companion Dossier</span>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-[10px] font-bold border border-emerald-200/80">
+              ✦ AI Pet Insights
+            </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-stone-900 flex items-center gap-3">
             <span>Welcome back, {activePet.name}</span>
@@ -198,10 +201,10 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
             <span className="text-[11px] text-stone-600">PawCare Dossier #PC-{activePet.id.replace('pet-', '')}</span>
             <button
               onClick={() => setActiveTab('assistant')}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-800 hover:text-emerald-950"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-950 transition-colors"
             >
-              <span>Ask AI about {activePet.name}</span>
-              <ArrowRight className="w-3 h-3" />
+              <span>✦ Ask PawCare AI</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
@@ -342,9 +345,14 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
           <div className="p-6 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_8px_32px_-4px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,1)] space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h3 className="text-lg font-bold text-stone-900">
-                  Pet Wellness Snapshot
-                </h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-stone-900">
+                    Pet Wellness Snapshot
+                  </h3>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-900 text-[10px] font-bold border border-emerald-200">
+                    ✦ Personalized by AI
+                  </span>
+                </div>
                 <p className="text-xs text-stone-500">
                   Daily tracking and engagement completion metrics for {activePet.name}.
                 </p>

@@ -353,11 +353,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Products & Inventory State
   const [allProducts, setAllProducts] = useState<Product[]>(() => {
+    const baseList = [...PRODUCTS, ...ADDITIONAL_STORE_PRODUCTS, ...PET_FOOD_LIST];
     try {
       const saved = localStorage.getItem('pawcare_all_products');
-      return saved ? JSON.parse(saved) : [...PRODUCTS, ...ADDITIONAL_STORE_PRODUCTS, ...PET_FOOD_LIST];
+      if (saved) {
+        const parsed: Product[] = JSON.parse(saved);
+        const existingIds = new Set(parsed.map((p) => p.id));
+        const missing = baseList.filter((p) => !existingIds.has(p.id));
+        return [...parsed, ...missing];
+      }
+      return baseList;
     } catch {
-      return [...PRODUCTS, ...ADDITIONAL_STORE_PRODUCTS, ...PET_FOOD_LIST];
+      return baseList;
     }
   });
 

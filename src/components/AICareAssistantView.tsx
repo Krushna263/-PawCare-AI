@@ -15,7 +15,8 @@ import {
   RefreshCw,
   PhoneCall,
   User,
-  PawPrint
+  PawPrint,
+  ArrowRight
 } from 'lucide-react';
 
 export const AICareAssistantView: React.FC = () => {
@@ -24,17 +25,7 @@ export const AICareAssistantView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'chat' | 'photo'>('chat');
 
   // Chat State
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'msg-welcome',
-      sender: 'assistant',
-      text: `Hello! I'm PawCare AI. I have ${activePet.name}’s profile active (${activePet.breed}, ${activePet.age} yrs old, ${activePet.weight} kg). 
-
-How can I help you today with everyday feeding rhythms, behavioral enrichment, safe whole-food treats, or seasonal comfort?`,
-      timestamp: 'Just now',
-    },
-  ]);
-
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputQuery, setInputQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -52,12 +43,37 @@ How can I help you today with everyday feeding rhythms, behavioral enrichment, s
     scrollToBottom();
   }, [messages, isLoading]);
 
-  const quickQuestions = [
-    `What foods are safe treats for ${activePet.name}?`,
-    `When should I feed an adult ${activePet.breed}?`,
-    `How can I keep ${activePet.name} properly hydrated?`,
-    `What care should I prepare for the upcoming rainy monsoon season?`,
-    `What are warning signs that require emergency veterinary care?`,
+  const suggestedPrompts = [
+    {
+      icon: '🥗',
+      title: `Safe foods & treats for ${activePet.name}`,
+      query: `What healthy whole foods, fruits, and vegetables are 100% safe treats for ${activePet.name}?`,
+    },
+    {
+      icon: '⏰',
+      title: `Optimal feeding rhythm for ${activePet.breed}`,
+      query: `What is the ideal daily feeding schedule and portion rhythm for a ${activePet.weight} kg ${activePet.breed}?`,
+    },
+    {
+      icon: '💧',
+      title: `Hydration & water intake`,
+      query: `How much water should ${activePet.name} drink each day and how can I monitor proper hydration?`,
+    },
+    {
+      icon: '🌦️',
+      title: `Seasonal health protocols`,
+      query: `What seasonal precautions should I take for ${activePet.name}'s paws and coat right now?`,
+    },
+    {
+      icon: '🧸',
+      title: `Brain games & enrichment`,
+      query: `Suggest 3 fun indoor mental enrichment activities to keep ${activePet.name} happy and active.`,
+    },
+    {
+      icon: '🩺',
+      title: `Clinical triage & checkup advice`,
+      query: `What are subtle early warning signs of discomfort or illness that require veterinary attention?`,
+    },
   ];
 
   const handleSendMessage = async (textToSend?: string) => {
@@ -238,51 +254,114 @@ How can I help you today with everyday feeding rhythms, behavioral enrichment, s
 
             {/* Messages Scroll Area */}
             <div className="flex-1 p-6 overflow-y-auto space-y-4">
-              {messages.map((msg) => {
-                const isUser = msg.sender === 'user';
-                return (
-                  <div
-                    key={msg.id}
-                    className={`flex items-start gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
-                  >
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold ${
-                        isUser
-                          ? 'bg-stone-800 text-white'
-                          : 'bg-emerald-800 text-white'
-                      }`}
-                    >
-                      {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+              {messages.length === 0 ? (
+                /* Opening Hero Experience - Never stare at an empty chat screen */
+                <div className="h-full flex flex-col justify-center animate-in fade-in zoom-in-95 duration-300">
+                  <div className="p-6 sm:p-8 rounded-3xl bg-linear-to-br from-emerald-950/95 via-emerald-900/90 to-stone-900 text-white shadow-xl border border-emerald-500/30 relative overflow-hidden space-y-6">
+                    {/* Ambient light glow */}
+                    <div className="absolute -top-12 -right-12 w-64 h-64 bg-emerald-400/20 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-amber-400/15 rounded-full blur-3xl pointer-events-none" />
+
+                    <div className="relative z-10 space-y-2">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-300 text-xs font-semibold">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+                        <span>✦ AI Powered Pet Companion</span>
+                      </div>
+
+                      <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                        <span>👋 Hi! I’m PawCare AI</span>
+                      </h2>
+
+                      <p className="text-emerald-200 text-base sm:text-lg font-medium italic">
+                        “Your AI companion for smarter pet care.”
+                      </p>
+
+                      <p className="text-emerald-100/90 text-sm font-normal pt-1">
+                        How can I help you and your pet today?
+                      </p>
+
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-xl bg-black/25 text-[11px] text-emerald-200/90 font-mono mt-1 border border-white/10">
+                        <PawPrint className="w-3 h-3 text-emerald-400" />
+                        <span>Active Profile: {activePet.name} ({activePet.breed}, {activePet.weight} kg)</span>
+                      </div>
                     </div>
 
-                    <div
-                      className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 text-xs leading-relaxed space-y-1.5 ${
-                        isUser
-                          ? 'bg-stone-900 text-white'
-                          : 'bg-stone-50 border border-stone-200/80 text-stone-800 shadow-2xs'
-                      }`}
-                    >
-                      <div className="whitespace-pre-wrap">{msg.text}</div>
-                      <div
-                        className={`text-[10px] text-right font-mono ${
-                          isUser ? 'text-stone-400' : 'text-stone-600'
-                        }`}
-                      >
-                        {msg.timestamp}
+                    {/* 4-6 Suggested Prompts Underneath */}
+                    <div className="relative z-10 space-y-3 pt-3 border-t border-emerald-800/60">
+                      <div className="text-xs font-semibold text-emerald-200 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>Tap any prompt to begin:</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        {suggestedPrompts.map((prompt, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => handleSendMessage(prompt.query)}
+                            className="p-3.5 rounded-2xl bg-white/10 hover:bg-white/20 active:scale-[0.98] border border-white/15 text-left transition-all duration-200 flex items-start gap-3 group cursor-pointer shadow-xs"
+                          >
+                            <span className="text-lg shrink-0 group-hover:scale-110 transition-transform">{prompt.icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <span className="text-xs font-bold text-white group-hover:text-emerald-200 block truncate">
+                                {prompt.title}
+                              </span>
+                              <span className="text-[11px] text-emerald-100/75 block mt-0.5 line-clamp-1">
+                                {prompt.query}
+                              </span>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-emerald-300 group-hover:translate-x-1 transition-transform shrink-0 mt-0.5 opacity-70 group-hover:opacity-100" />
+                          </button>
+                        ))}
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ) : (
+                messages.map((msg) => {
+                  const isUser = msg.sender === 'user';
+                  return (
+                    <div
+                      key={msg.id}
+                      className={`flex items-start gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}
+                    >
+                      <div
+                        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold ${
+                          isUser
+                            ? 'bg-stone-800 text-white'
+                            : 'bg-emerald-800 text-white shadow-2xs'
+                        }`}
+                      >
+                        {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                      </div>
+
+                      <div
+                        className={`max-w-[85%] sm:max-w-[75%] rounded-2xl p-4 text-xs leading-relaxed space-y-1.5 ${
+                          isUser
+                            ? 'bg-stone-900 text-white shadow-sm'
+                            : 'bg-stone-50 border border-stone-200/80 text-stone-800 shadow-2xs'
+                        }`}
+                      >
+                        <div className="whitespace-pre-wrap">{msg.text}</div>
+                        <div
+                          className={`text-[10px] text-right font-mono ${
+                            isUser ? 'text-stone-400' : 'text-stone-600'
+                          }`}
+                        >
+                          {msg.timestamp}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
 
               {isLoading && (
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center shrink-0 shadow-2xs">
                     <Bot className="w-4 h-4 animate-pulse" />
                   </div>
-                  <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 text-xs text-stone-500 flex items-center gap-2">
+                  <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 text-xs text-stone-600 flex items-center gap-2">
                     <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-700" />
-                    <span>PawCare AI is formulating personalized guidance...</span>
+                    <span>PawCare AI is formulating personalized guidance for {activePet.name}...</span>
                   </div>
                 </div>
               )}
@@ -330,18 +409,24 @@ How can I help you today with everyday feeding rhythms, behavioral enrichment, s
             
             {/* Quick Prompts */}
             <div className="p-6 rounded-3xl bg-white border border-stone-200/80 shadow-xs space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-stone-900">
-                <Sparkles className="w-4 h-4 text-emerald-700" />
-                <span>Suggested Questions for {activePet.name}</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs font-bold text-stone-900">
+                  <Sparkles className="w-4 h-4 text-emerald-700" />
+                  <span>Suggested Prompts</span>
+                </div>
+                <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/80">
+                  ✦ AI Pet Insights
+                </span>
               </div>
               <div className="space-y-2">
-                {quickQuestions.map((q, idx) => (
+                {suggestedPrompts.map((p, idx) => (
                   <button
                     key={idx}
-                    onClick={() => handleSendMessage(q)}
-                    className="w-full text-left p-3 rounded-xl bg-stone-50 hover:bg-emerald-50 hover:border-emerald-200 border border-stone-200 text-xs text-stone-700 transition-colors"
+                    onClick={() => handleSendMessage(p.query)}
+                    className="w-full text-left p-3 rounded-2xl bg-stone-50 hover:bg-emerald-50/80 hover:border-emerald-200 border border-stone-200/80 text-xs text-stone-700 transition-all flex items-start gap-2.5 cursor-pointer group"
                   >
-                    {q}
+                    <span className="text-base shrink-0">{p.icon}</span>
+                    <span className="group-hover:text-emerald-950 font-medium leading-snug">{p.title}</span>
                   </button>
                 ))}
               </div>

@@ -175,8 +175,10 @@ export const PetFoodSection: React.FC = () => {
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-emerald-200 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
-              <span>Veterinary-Approved Nutritional Formulations · 58+ Recipes</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              <span>✦ AI Ingredient Analyzer</span>
+              <span className="text-white/40">·</span>
+              <span>58+ Veterinary Formulations</span>
             </div>
 
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white drop-shadow-xs">

@@ -127,7 +127,9 @@ export type ProductCategory =
   | 'Hygiene'
   | 'Beds'
   | 'Bowls'
-  | 'Leashes';
+  | 'Leashes'
+  | 'Accessories'
+  | 'Fashion';
 
 export type FoodType = 
   | 'Dry Kibble'
@@ -155,6 +157,10 @@ export interface Product {
   forSpecies: AnimalType[];
   inStock: boolean;
   tag?: string;
+  sizes?: string[];
+  colors?: string[];
+  material?: string;
+  subCategory?: string;
 }
 
 export interface CartItem {

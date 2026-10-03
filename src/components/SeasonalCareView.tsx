@@ -217,6 +217,9 @@ export const SeasonalCareView: React.FC = () => {
           <div className="flex items-center gap-2 text-xs font-semibold text-emerald-800 uppercase tracking-wider mb-1">
             <Compass className="w-3.5 h-3.5" />
             <span>Environmental Wellness</span>
+            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-[10px] font-bold border border-emerald-200">
+              ✦ AI Climate Adaptation
+            </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-stone-900">
             Seasonal Care Guide

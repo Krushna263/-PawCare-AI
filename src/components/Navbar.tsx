@@ -22,7 +22,8 @@ import {
   ShieldCheck,
   ArrowRightLeft,
   LogOut,
-  KeyRound
+  KeyRound,
+  Sparkles
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -78,13 +79,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
   const navItems: { id: NavTab; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'pet', label: 'My Pet', icon: Heart },
-    { id: 'user_panel', label: 'User Panel', icon: User },
-    { id: 'admin_panel', label: 'Admin Panel', icon: ShieldCheck },
-    { id: 'food', label: 'Pet Food', icon: UtensilsCrossed },
     { id: 'feeding', label: 'Feeding', icon: Utensils },
+    { id: 'food', label: 'Pet Food', icon: UtensilsCrossed },
     { id: 'vet', label: 'Vet Care', icon: Stethoscope },
-    { id: 'store', label: 'Pet Store', icon: ShoppingBag },
-    { id: 'assistant', label: 'AI Care', icon: Bot },
+    { id: 'store', label: 'Store & Fashion', icon: ShoppingBag },
   ];
 
   const handleNavClick = (tab: NavTab) => {
@@ -218,8 +216,31 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
             </button>
           </nav>
 
-          {/* Zone 3: 1-2 Primary Actions */}
-          <div className="flex items-center gap-2.5">
+          {/* Zone 3: Primary CTA + Quick Controls */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Primary CTA in Navbar: ✦ Ask PawCare AI */}
+            <div className="relative inline-flex group shrink-0">
+              <div 
+                className="absolute -inset-0.5 rounded-full bg-linear-to-r from-emerald-500 via-teal-400 to-amber-300 opacity-70 blur-xs group-hover:opacity-100 transition duration-500 animate-pulse pointer-events-none"
+                aria-hidden="true"
+              />
+              <button
+                onClick={() => handleNavClick('assistant')}
+                className={`relative px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-xs transition-all duration-300 shadow-sm hover:shadow-md active:scale-95 flex items-center gap-1.5 sm:gap-2 overflow-hidden cursor-pointer ${
+                  activeTab === 'assistant'
+                    ? 'bg-emerald-950 text-white ring-2 ring-emerald-400'
+                    : 'bg-linear-to-r from-emerald-900 via-emerald-800 to-stone-900 hover:from-emerald-850 hover:to-emerald-950 text-white'
+                }`}
+                title="Chat with PawCare AI"
+              >
+                <span className="absolute inset-0 w-1/2 h-full bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-[250%] transition-transform duration-1000 pointer-events-none" />
+                <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse shrink-0" />
+                <span className="tracking-tight whitespace-nowrap text-white font-bold">
+                  ✦ Ask PawCare AI
+                </span>
+              </button>
+            </div>
+
             {/* User / Admin Authentication State Pill */}
             {isAuthenticated && currentUser ? (
               <div className="flex items-center gap-1 p-0.5 rounded-full bg-white/70 backdrop-blur-md border border-white/80 shadow-[0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)]">
@@ -417,8 +438,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
 
         {/* Mobile Dropdown Menu Drawer */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-white/60 bg-white/90 backdrop-blur-2xl px-4 pt-3 pb-6 shadow-2xl animate-in slide-in-from-top duration-200">
-            <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className="lg:hidden border-t border-white/60 bg-white/95 backdrop-blur-2xl px-4 pt-3 pb-6 shadow-2xl animate-in slide-in-from-top duration-200 space-y-3">
+            {/* Primary Mobile AI CTA */}
+            <button
+              onClick={() => handleNavClick('assistant')}
+              className="w-full py-3 px-4 rounded-2xl bg-linear-to-r from-emerald-900 via-teal-800 to-stone-900 text-white font-extrabold text-xs shadow-md flex items-center justify-center gap-2 cursor-pointer border border-emerald-500/30"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+              <span>✦ Ask PawCare AI</span>
+            </button>
+
+            <div className="grid grid-cols-2 gap-2 mb-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = activeTab === item.id;
@@ -458,9 +488,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
           {[
             { id: 'home', label: 'Home', icon: Home },
             { id: 'pet', label: 'My Pet', icon: Heart },
-            { id: 'food', label: 'Pet Food', icon: UtensilsCrossed },
+            { id: 'feeding', label: 'Feeding', icon: Utensils },
             { id: 'vet', label: 'Vet Care', icon: Stethoscope },
-            { id: 'assistant', label: 'AI Care', icon: Bot },
+            { id: 'assistant', label: '✦ AI Care', icon: Bot },
           ].map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;

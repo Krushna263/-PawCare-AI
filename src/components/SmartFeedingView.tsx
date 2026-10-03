@@ -93,6 +93,9 @@ export const SmartFeedingView: React.FC = () => {
           <div className="flex items-center gap-2 text-xs font-semibold text-amber-800 uppercase tracking-wider mb-1">
             <Utensils className="w-3.5 h-3.5" />
             <span>Nutritional Health Suite</span>
+            <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-bold border border-amber-200">
+              ✦ AI Calibrated Rhythms
+            </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-stone-900">
             Smart Feeding Planner
