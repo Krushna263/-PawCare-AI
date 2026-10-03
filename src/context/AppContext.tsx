@@ -403,7 +403,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [pets, setPets] = useState<Pet[]>(() => {
     try {
       const saved = localStorage.getItem('pawcare_pets');
-      return saved ? JSON.parse(saved) : INITIAL_PETS;
+      if (saved) {
+        const parsed: Pet[] = JSON.parse(saved);
+        return parsed.map((p) => {
+          if (p.photoUrl && p.photoUrl.startsWith('/src/assets/')) {
+            const matched = INITIAL_PETS.find((ip) => ip.id === p.id);
+            return {
+              ...p,
+              photoUrl: matched ? matched.photoUrl : p.photoUrl.replace('/src/assets/', '/assets/'),
+            };
+          }
+          return p;
+        });
+      }
+      return INITIAL_PETS;
     } catch {
       return INITIAL_PETS;
     }

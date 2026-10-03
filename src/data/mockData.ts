@@ -1,4 +1,7 @@
 import { Pet, Veterinarian, Product, Reminder, FeedingMeal } from '../types';
+import brunoImg from '../assets/images/pet_bruno_dog_1790874519554.jpg';
+import lunaImg from '../assets/images/pet_luna_cat_1790874531607.jpg';
+import miloImg from '../assets/images/pet_milo_beagle_1790874541386.jpg';
 
 export const INITIAL_PETS: Pet[] = [
   {
@@ -14,7 +17,7 @@ export const INITIAL_PETS: Pet[] = [
     allergies: 'Mild reaction to artificial poultry flavorings',
     dietaryRestrictions: 'Grain-friendly kibble with fresh pumpkin topper',
     indoorOutdoor: 'Both',
-    photoUrl: '/src/assets/images/pet_bruno_dog_1790874519554.jpg',
+    photoUrl: brunoImg || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&auto=format&fit=crop&q=80',
     microchipId: '985141002938472',
     lastCheckupDate: '2026-08-15',
     wellness: {
@@ -38,7 +41,7 @@ export const INITIAL_PETS: Pet[] = [
     allergies: 'None recorded',
     dietaryRestrictions: 'Hairball control formula, wet food in evenings',
     indoorOutdoor: 'Indoor',
-    photoUrl: '/src/assets/images/pet_luna_cat_1790874531607.jpg',
+    photoUrl: lunaImg || 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&auto=format&fit=crop&q=80',
     microchipId: '985141009823141',
     lastCheckupDate: '2026-06-10',
     wellness: {
@@ -62,7 +65,7 @@ export const INITIAL_PETS: Pet[] = [
     allergies: 'Grass pollen sensitivity in spring',
     dietaryRestrictions: 'Puppy-to-junior transitioning blend',
     indoorOutdoor: 'Both',
-    photoUrl: '/src/assets/images/pet_milo_beagle_1790874541386.jpg',
+    photoUrl: miloImg || 'https://images.unsplash.com/photo-1537151625747-768eb6cf92b2?w=800&auto=format&fit=crop&q=80',
     microchipId: '985141003847219',
     lastCheckupDate: '2026-09-02',
     wellness: {

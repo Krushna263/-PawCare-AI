@@ -128,8 +128,9 @@ export const UserPanel: React.FC<UserPanelProps> = ({ onOpenNewPetModal, onEditP
         
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <img
+            <ImageWithFallback
               src={currentUser.avatarUrl}
+              fallbackSrc="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80"
               alt={currentUser.name}
               className="w-16 h-16 rounded-2xl object-cover border-2 border-emerald-400/60 shadow-md shrink-0"
             />
@@ -267,8 +268,13 @@ export const UserPanel: React.FC<UserPanelProps> = ({ onOpenNewPetModal, onEditP
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <img
+                      <ImageWithFallback
                         src={pet.photoUrl}
+                        fallbackSrc={
+                          pet.animalType === 'Dog'
+                            ? 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&auto=format&fit=crop&q=80'
+                            : 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&auto=format&fit=crop&q=80'
+                        }
                         alt={pet.name}
                         className="w-14 h-14 rounded-2xl object-cover border border-stone-200 shrink-0"
                       />

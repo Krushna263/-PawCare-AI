@@ -105,8 +105,13 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
                   : 'bg-white border-stone-200 text-stone-600 hover:border-stone-300'
               }`}
             >
-              <img
+              <ImageWithFallback
                 src={p.photoUrl}
+                fallbackSrc={
+                  p.animalType === 'Dog'
+                    ? 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&auto=format&fit=crop&q=80'
+                    : 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&auto=format&fit=crop&q=80'
+                }
                 alt={p.name}
                 className="w-5 h-5 rounded-full object-cover"
               />
@@ -127,6 +132,11 @@ export const PetProfileView: React.FC<PetProfileViewProps> = ({ onOpenNewPetModa
             <div className="relative rounded-2xl overflow-hidden aspect-4/3 bg-stone-100 border border-stone-200/90 shadow-inner">
               <ImageWithFallback
                 src={activePet.photoUrl}
+                fallbackSrc={
+                  activePet.animalType === 'Dog'
+                    ? 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&auto=format&fit=crop&q=80'
+                    : 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&auto=format&fit=crop&q=80'
+                }
                 alt={activePet.name}
                 className="w-full h-full object-cover"
               />

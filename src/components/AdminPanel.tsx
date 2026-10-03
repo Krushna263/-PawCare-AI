@@ -890,8 +890,13 @@ export const AdminPanel: React.FC = () => {
                 className="p-5 rounded-3xl bg-white border border-stone-200/80 shadow-2xs space-y-3"
               >
                 <div className="flex items-center gap-3">
-                  <img
+                  <ImageWithFallback
                     src={p.photoUrl}
+                    fallbackSrc={
+                      p.animalType === 'Dog'
+                        ? 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=300&auto=format&fit=crop&q=80'
+                        : 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=300&auto=format&fit=crop&q=80'
+                    }
                     alt={p.name}
                     className="w-12 h-12 rounded-2xl object-cover border border-stone-200 shrink-0"
                   />

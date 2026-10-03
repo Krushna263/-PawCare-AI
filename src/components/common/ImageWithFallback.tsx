@@ -1,22 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PawPrint } from 'lucide-react';
 
 interface ImageWithFallbackProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+  fallbackSrc?: string;
   fallbackIcon?: React.ReactNode;
   fallbackText?: string;
 }
 
 export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
   src,
+  fallbackSrc,
   alt = 'Image',
   className = '',
   fallbackIcon,
   fallbackText,
   ...props
 }) => {
+  const [currentSrc, setCurrentSrc] = useState<string | undefined>(() => {
+    if (!src) return fallbackSrc;
+    // Normalize any accidental `/src/assets/` to public `/assets/` or fallback
+    if (src.startsWith('/src/assets/')) {
+      return src.replace('/src/assets/', '/assets/');
+    }
+    return src;
+  });
   const [hasError, setHasError] = useState(false);
 
-  if (hasError || !src) {
+  useEffect(() => {
+    if (!src) {
+      setCurrentSrc(fallbackSrc);
+      setHasError(!fallbackSrc);
+    } else if (src.startsWith('/src/assets/')) {
+      setCurrentSrc(src.replace('/src/assets/', '/assets/'));
+      setHasError(false);
+    } else {
+      setCurrentSrc(src);
+      setHasError(false);
+    }
+  }, [src, fallbackSrc]);
+
+  const handleError = () => {
+    // If primary src failed and we have a fallbackSrc, try fallbackSrc first!
+    if (fallbackSrc && currentSrc !== fallbackSrc) {
+      setCurrentSrc(fallbackSrc);
+    } else {
+      setHasError(true);
+    }
+  };
+
+  if (hasError || !currentSrc) {
     return (
       <div 
         className={`flex flex-col items-center justify-center bg-stone-100 text-stone-500 overflow-hidden select-none ${className}`}
@@ -36,13 +68,14 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 
   return (
     <img
-      src={src}
+      src={currentSrc}
       alt={alt}
       className={className}
       referrerPolicy="no-referrer"
-      onError={() => setHasError(true)}
+      onError={handleError}
       loading="lazy"
       {...props}
     />
   );
 };
+

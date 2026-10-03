@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { NavTab } from '../types';
+import { ImageWithFallback } from './common/ImageWithFallback';
 import { 
   Home, 
   Heart, 
@@ -279,10 +280,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
                 className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white/70 hover:bg-white/90 backdrop-blur-md border border-white/80 text-stone-800 text-xs font-medium transition-all shadow-[0_2px_8px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)] focus:outline-none cursor-pointer"
                 aria-expanded={isPetDropdownOpen}
               >
-                <img
+                <ImageWithFallback
                   src={activePet.photoUrl}
+                  fallbackSrc={
+                    activePet.animalType === 'Dog'
+                      ? 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=100&auto=format&fit=crop&q=80'
+                      : 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=100&auto=format&fit=crop&q=80'
+                  }
                   alt={activePet.name}
-                  className="w-6 h-6 rounded-full object-cover border border-emerald-700/20"
+                  className="w-6 h-6 rounded-full object-cover border border-emerald-700/20 shrink-0"
                 />
                 <span className="max-w-[80px] sm:max-w-[110px] truncate">{activePet.name}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-stone-500 shrink-0" />
@@ -312,8 +318,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenNewPetModal }) => {
                             : 'text-stone-700 hover:bg-white/80'
                         }`}
                       >
-                        <img
+                        <ImageWithFallback
                           src={pet.photoUrl}
+                          fallbackSrc={
+                            pet.animalType === 'Dog'
+                              ? 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=100&auto=format&fit=crop&q=80'
+                              : 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=100&auto=format&fit=crop&q=80'
+                          }
                           alt={pet.name}
                           className="w-7 h-7 rounded-full object-cover shrink-0 border border-stone-200"
                         />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { ImageWithFallback } from './common/ImageWithFallback';
+import heroAllPetsImg from '../assets/images/all_pets_realistic_1790933284668.jpg';
 import { 
   Heart, 
   Utensils, 
@@ -87,7 +88,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onOpenNewPetModal }) =
             <div className="lg:col-span-6 relative">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-stone-200/90 aspect-16/10 bg-stone-100 group">
                 <ImageWithFallback
-                  src="/src/assets/images/all_pets_realistic_1790933284668.jpg"
+                  src={heroAllPetsImg || '/assets/images/all_pets_realistic_1790933284668.jpg'}
+                  fallbackSrc="https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=1200&auto=format&fit=crop&q=80"
                   alt="Realistic domestic pets including dogs, cats, rabbits, and birds gathered together in a sunlit home"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
                 />
